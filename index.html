@@ -109,6 +109,19 @@
 
         .empty { color: var(--muted); font-size: .8rem; }
 
+        /* ── Team filter chips ────────────────────────────────── */
+        .chip.team-chip { cursor: pointer; user-select: none; }
+        .chip.team-chip:hover:not(.locked-chip) { border-color: var(--gold); }
+        .chip.excluded { opacity: .38; text-decoration: line-through; border-color: #b71c1c !important; }
+        .filter-pot-tabs { display: flex; gap: 4px; margin-bottom: 8px; }
+        .fpot-btn {
+            flex: 1; padding: 4px 2px; border-radius: 6px;
+            border: 2px solid var(--border); background: var(--bg);
+            color: var(--muted); font-size: .65rem; font-weight: 700;
+            cursor: pointer; transition: all .15s;
+        }
+        .fpot-btn.active { background: rgba(255,255,255,.04); }
+
         /* ── Pot tabs ─────────────────────────────────────────── */
         .pot-tabs { display: flex; gap: 6px; margin-bottom: 14px; width: 100%; }
         .pot-tab {
@@ -222,6 +235,14 @@
                 <span class="empty">Add players to start.</span>
             </div>
         </div>
+
+        <!-- Team filter -->
+        <div class="card">
+            <div class="card-title">Exclude Teams</div>
+            <div class="filter-pot-tabs" id="filterPotTabs"></div>
+            <div class="chips" id="teamFilterChips"></div>
+        </div>
+
         <button class="btn btn-red" onclick="resetPicks()" style="width:100%">🔄 Reset Picks</button>
     </div>
 
@@ -292,10 +313,11 @@ const PALETTE = [
 
 // ── App state ──────────────────────────────────────────────────────────────────
 // Synced with Firestore:
-let S = { players: [], currentPot: 1, picks: [] };
+let S = { players: [], currentPot: 1, picks: [], excludedTeams: { 1: [], 2: [], 3: [], 4: [] } };
 
-// Local only (animation):
+// Local only:
 let rotation = 0, spinning = false, pendingTeam = null;
+let filterPot = 1;
 let aFrom = 0, aTo = 0, aDur = 4000, aStart = null;
 
 let db = null, roomCode = null, unsub = null;
@@ -327,9 +349,10 @@ window.addEventListener('load', async () => {
     unsub = db.collection('rooms').doc(roomCode).onSnapshot(snap => {
         if (snap.exists) {
             const d = snap.data();
-            S.players    = d.players    || [];
-            S.currentPot = d.currentPot || 1;
-            S.picks      = d.picks      || [];
+            S.players       = d.players    || [];
+            S.currentPot    = d.currentPot || 1;
+            S.picks         = d.picks      || [];
+            S.excludedTeams = d.excludedTeams || { 1: [], 2: [], 3: [], 4: [] };
         } else {
             db.collection('rooms').doc(roomCode).set(S);
         }
@@ -383,8 +406,9 @@ function currentPlayer() {
 
 function remainingInPot(pot) {
     pot = pot ?? S.currentPot;
-    const used = new Set(S.picks.filter(p => p.pot === pot).map(p => p.team));
-    return POTS[pot].filter(t => !used.has(t));
+    const used     = new Set(S.picks.filter(p => p.pot === pot).map(p => p.team));
+    const excluded = new Set((S.excludedTeams || {})[pot] || []);
+    return POTS[pot].filter(t => !used.has(t) && !excluded.has(t));
 }
 
 function potDone(pot) {
@@ -399,6 +423,7 @@ function allDone() {
 async function nextPot() {
     if (S.currentPot >= 4) return;
     S.currentPot++;
+    filterPot = S.currentPot;
     rotation = 0;
     document.getElementById('announce').textContent = '';
     await save();
@@ -498,6 +523,7 @@ function startSpin() {
     if (potDone())         { alert('This pot is done — click "Next Pot →" to continue.'); return; }
 
     const rem = remainingInPot();
+    if (!rem.length) { alert('No teams available in this pot — un-exclude some teams first.'); return; }
     const idx = Math.floor(Math.random() * rem.length);
     pendingTeam = rem[idx];
 
@@ -532,6 +558,7 @@ async function finishSpin() {
 function renderAll() {
     renderPotTabs();
     renderPlayers();
+    renderTeamFilter();
     renderControls();
     renderResults();
     drawWheel(rotation);
@@ -621,6 +648,54 @@ function renderResults() {
         </div>`;
     }
     el.innerHTML = html || '<span class="empty">No picks yet.</span>';
+}
+
+// ── Team filter ────────────────────────────────────────────────────────────────
+function setFilterPot(pot) {
+    filterPot = pot;
+    renderTeamFilter();
+}
+
+function toggleTeam(pot, team) {
+    pot = parseInt(pot);
+    if (S.picks.some(p => p.pot === pot)) return; // pot already started
+    const ex = (S.excludedTeams[pot] || []);
+    if (ex.includes(team)) {
+        S.excludedTeams[pot] = ex.filter(t => t !== team);
+    } else {
+        S.excludedTeams[pot] = [...ex, team];
+    }
+    renderTeamFilter();
+    drawWheel(rotation);
+    save();
+}
+
+function renderTeamFilter() {
+    const tabsEl  = document.getElementById('filterPotTabs');
+    const chipsEl = document.getElementById('teamFilterChips');
+
+    tabsEl.innerHTML = [1,2,3,4].map(pot => {
+        const { label, color } = POT_META[pot];
+        const isActive = pot === filterPot;
+        return `<button class="fpot-btn${isActive ? ' active' : ''}"
+            style="border-color:${isActive ? color : 'var(--border)'};color:${isActive ? color : 'var(--muted)'}"
+            onclick="setFilterPot(${pot})">${label}</button>`;
+    }).join('');
+
+    const potStarted = S.picks.some(p => p.pot === filterPot);
+    const excluded   = new Set((S.excludedTeams || {})[filterPot] || []);
+    const teams      = POTS[filterPot];
+
+    if (potStarted) {
+        chipsEl.innerHTML = '<span class="empty">Locked — pot already started.</span>';
+        return;
+    }
+
+    chipsEl.innerHTML = teams.map(team => {
+        const isOut  = excluded.has(team);
+        const safe   = team.replace(/'/g, "\\'");
+        return `<span class="chip team-chip${isOut ? ' excluded' : ''}" onclick="toggleTeam(${filterPot},'${safe}')">${team}</span>`;
+    }).join('');
 }
 
 // ── Misc ───────────────────────────────────────────────────────────────────────
