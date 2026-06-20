@@ -21,7 +21,7 @@
         }
         body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
 
-        /* ── Header ─────────────────────────────────────────────── */
+        /* ── Header ─────────────────────────────────────────── */
         header {
             background: linear-gradient(135deg, #071810, #0f2a14);
             border-bottom: 2px solid var(--green);
@@ -40,7 +40,7 @@
         }
         .back-btn:hover { border-color: var(--green); }
 
-        /* ── Main ────────────────────────────────────────────────── */
+        /* ── Main ────────────────────────────────────────────── */
         .main { max-width: 1200px; margin: 0 auto; padding: 16px; }
 
         .legend {
@@ -54,7 +54,7 @@
         .ldot-e { background: #444; }
         .legend-hint { margin-left: auto; font-size: .72rem; }
 
-        /* ── Board ───────────────────────────────────────────────── */
+        /* ── Board ───────────────────────────────────────────── */
         .board-header {
             display: grid;
             grid-template-columns: 88px repeat(4, 1fr) 82px;
@@ -63,10 +63,9 @@
             letter-spacing: 1px; color: var(--muted); text-align: center;
         }
         .board-header .bh-left { text-align: left; }
-
         .board { display: flex; flex-direction: column; gap: 6px; }
 
-        /* ── Player row ──────────────────────────────────────────── */
+        /* ── Player row ──────────────────────────────────────── */
         .player-row {
             display: grid;
             grid-template-columns: 88px repeat(4, 1fr) 82px;
@@ -76,20 +75,14 @@
             border-radius: 10px;
             padding: 8px;
             align-items: stretch;
-            transition: border-color .15s;
         }
-        .player-row:hover { border-color: #2d4a60; }
-
         .player-name {
             display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: .92rem; text-align: center;
-            padding: 4px 2px;
+            font-weight: 700; font-size: .92rem; text-align: center; padding: 4px 2px;
         }
-
-        /* teams-wrap: display:contents flattens it into the grid on desktop */
         .teams-wrap { display: contents; }
 
-        /* ── Team card ───────────────────────────────────────────── */
+        /* ── Team card ───────────────────────────────────────── */
         .team-card {
             position: relative;
             border-radius: 8px;
@@ -101,9 +94,8 @@
             text-align: center;
             user-select: none;
         }
-        .team-card:hover { transform: translateY(-2px); }
+        .team-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,.3); }
         .team-card:active { transform: translateY(0); }
-
         .team-card.s-qualified { border-color: var(--green); background: rgba(76,175,80,.07); }
         .team-card.s-alive     { border-color: rgba(249,168,37,.45); }
         .team-card.s-eliminated { opacity: .38; filter: grayscale(.6); }
@@ -112,49 +104,112 @@
             position: absolute; top: 4px; left: 5px;
             font-size: .55rem; color: var(--muted); font-weight: 700;
         }
-        .team-flag { font-size: 1.6rem; line-height: 1; margin-bottom: 4px; }
-        .team-name { font-size: .72rem; font-weight: 700; line-height: 1.25; }
+        .team-flag  { font-size: 1.6rem; line-height: 1; margin-bottom: 4px; }
+        .team-name  { font-size: .72rem; font-weight: 700; line-height: 1.25; }
         .team-group { font-size: .6rem; color: var(--muted); margin-top: 2px; }
         .team-badge {
-            margin-top: 6px;
-            display: inline-block; padding: 2px 7px; border-radius: 10px;
+            margin-top: 6px; display: inline-block;
+            padding: 2px 7px; border-radius: 10px;
             font-size: .6rem; font-weight: 700; letter-spacing: .3px;
         }
         .s-qualified .team-badge { background: rgba(76,175,80,.18); color: var(--green); }
         .s-alive     .team-badge { background: rgba(249,168,37,.15); color: var(--yellow); }
         .s-eliminated .team-badge { background: rgba(60,60,60,.3); color: #666; }
 
-        /* ── Score cell ──────────────────────────────────────────── */
-        .score-cell { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
-        .score-big { font-size: 2.2rem; font-weight: 900; color: var(--gold); line-height: 1; }
-        .score-sub { font-size: .6rem; color: var(--muted); }
+        /* ── Score cell ──────────────────────────────────────── */
+        .score-cell {
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 2px;
+        }
+        .score-big   { font-size: 2.2rem; font-weight: 900; color: var(--gold); line-height: 1; }
+        .score-sub   { font-size: .6rem; color: var(--muted); }
         .score-detail { font-size: .62rem; color: var(--muted); margin-top: 3px; }
 
-        /* ── Footer ──────────────────────────────────────────────── */
-        .footer { text-align: center; color: var(--muted); font-size: .73rem; margin-top: 18px; padding-bottom: 20px; }
+        /* ── Popup overlay ───────────────────────────────────── */
+        .popup-overlay {
+            display: none; position: fixed; inset: 0; z-index: 200;
+        }
+        .popup-overlay.active { display: block; }
 
-        /* ── Mobile ──────────────────────────────────────────────── */
+        .popup {
+            position: fixed;
+            z-index: 201;
+            width: 268px;
+            background: #182d42;
+            border: 1px solid #2d4a62;
+            border-radius: 13px;
+            padding: 14px;
+            box-shadow: 0 12px 40px rgba(0,0,0,.6);
+            font-size: .82rem;
+        }
+        .popup-header {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+        }
+        .popup-flag    { font-size: 1.8rem; line-height: 1; flex-shrink: 0; }
+        .popup-title   { font-weight: 700; font-size: .95rem; }
+        .popup-sub     { font-size: .63rem; color: var(--muted); margin-top: 1px; }
+        .popup-close {
+            margin-left: auto; background: none; border: none;
+            color: var(--muted); font-size: 1.3rem; cursor: pointer;
+            padding: 0 2px; line-height: 1; flex-shrink: 0;
+        }
+        .popup-close:hover { color: var(--text); }
+
+        .popup-section { margin-bottom: 10px; }
+        .popup-section:last-child { margin-bottom: 0; }
+        .popup-section-title {
+            font-size: .65rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--muted); margin-bottom: 6px;
+        }
+        .popup-match {
+            display: flex; align-items: center; gap: 6px;
+            padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,.04);
+            font-size: .78rem;
+        }
+        .popup-match:last-child { border-bottom: none; }
+        .popup-date  { color: var(--muted); font-size: .68rem; min-width: 44px; flex-shrink: 0; }
+        .popup-score { margin-left: auto; font-weight: 700; font-size: .78rem; }
+        .popup-wdl   { font-size: .6rem; font-weight: 900; padding: 1px 4px; border-radius: 4px; }
+        .wdl-W { background: rgba(76,175,80,.2); color: var(--green); }
+        .wdl-D { background: rgba(249,168,37,.15); color: var(--yellow); }
+        .wdl-L { background: rgba(229,57,53,.2); color: var(--red); }
+
+        .today-badge {
+            font-size: .6rem; font-weight: 700; background: rgba(255,215,0,.15);
+            color: var(--gold); padding: 1px 5px; border-radius: 4px;
+        }
+
+        .pct-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+        .pct-bar-wrap {
+            flex: 1; height: 7px; background: rgba(255,255,255,.07);
+            border-radius: 4px; overflow: hidden;
+        }
+        .pct-bar { height: 100%; border-radius: 4px; transition: width .4s ease; }
+        .pct-num { font-weight: 800; font-size: .85rem; min-width: 38px; text-align: right; }
+
+        /* ── Footer ──────────────────────────────────────────── */
+        .footer {
+            text-align: center; color: var(--muted); font-size: .73rem;
+            margin-top: 18px; padding-bottom: 20px;
+        }
+
+        /* ── Mobile ──────────────────────────────────────────── */
         @media (max-width: 780px) {
             .board-header { display: none; }
-            .player-row {
-                display: flex; flex-direction: column; gap: 8px;
-            }
-            .teams-wrap {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 6px;
-            }
-            .player-name {
-                justify-content: flex-start;
-                font-size: 1rem;
-                border-bottom: 1px solid var(--border);
-                padding-bottom: 8px;
-            }
-            .score-cell {
-                flex-direction: row; justify-content: flex-end;
-                border-top: 1px solid var(--border); padding-top: 8px; gap: 8px;
-            }
+            .player-row { display: flex; flex-direction: column; gap: 8px; }
+            .teams-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+            .player-name { justify-content: flex-start; font-size: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+            .score-cell { flex-direction: row; justify-content: flex-end; border-top: 1px solid var(--border); padding-top: 8px; gap: 8px; }
             .score-big { font-size: 1.5rem; }
+
+            /* Mobile popup: bottom sheet */
+            .popup {
+                width: 100%; left: 0 !important; right: 0;
+                bottom: 0 !important; top: auto !important;
+                border-radius: 18px 18px 0 0;
+                transform: none !important;
+                max-height: 70vh; overflow-y: auto;
+            }
         }
     </style>
 </head>
@@ -164,26 +219,28 @@
     <div class="header-inner">
         <div>
             <h1>🏆 เชียร์บอลโลก 2026</h1>
-            <div class="header-sub">สรุปสถานะทีม — เข้ารอบ 32 ทีม</div>
+            <div class="header-sub">สรุปสถานะทีม — เข้ารอบ 32 ทีม · คลิกที่ทีมเพื่อดูข้อมูล</div>
         </div>
         <a class="back-btn" href="index.html">← กลับหน้าจับฉลาก</a>
     </div>
 </header>
 
+<!-- Popup overlay (clicking outside closes) -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup()">
+    <div class="popup" id="popup" onclick="event.stopPropagation()"></div>
+</div>
+
 <div class="main">
     <div class="legend">
-        <span class="legend-item"><span class="ldot ldot-q"></span>เข้ารอบ 32 ทีมแล้ว</span>
+        <span class="legend-item"><span class="ldot ldot-q"></span>เข้ารอบแล้ว</span>
         <span class="legend-item"><span class="ldot ldot-a"></span>ยังลุ้น</span>
         <span class="legend-item"><span class="ldot ldot-e"></span>ตกรอบ</span>
-        <span class="legend-hint">คลิกที่ทีมเพื่ออัปเดตสถานะ</span>
+        <span class="legend-hint">คลิกที่การ์ดทีมเพื่อดูผลและโปรแกรม</span>
     </div>
 
     <div class="board-header">
         <div class="bh-left">ผู้เล่น</div>
-        <div>ทีม 1 (Pot 1)</div>
-        <div>ทีม 2 (Pot 2)</div>
-        <div>ทีม 3 (Pot 3)</div>
-        <div>ทีม 4 (Pot 4)</div>
+        <div>ทีม 1</div><div>ทีม 2</div><div>ทีม 3</div><div>ทีม 4</div>
         <div>เข้ารอบ</div>
     </div>
 
@@ -218,76 +275,268 @@ const FLAGS = {
     "Brazil":"🇧🇷","Ecuador":"🇪🇨","Egypt":"🇪🇬","Turkey":"🇹🇷"
 };
 
-const BADGE = {
-    qualified: "✅ เข้ารอบ",
-    alive:     "🟡 ยังลุ้น",
-    eliminated:"❌ ตกรอบ"
-};
+const TODAY_DATE = "Jun 20";
 
-const CYCLE = { alive: "qualified", qualified: "eliminated", eliminated: "alive" };
-
-// ── Seed data (pre-loaded from results as of 2026-06-20) ────────────────────
+// qualifyPct source: FoxSports odds (Jun 20 2026), converted from American odds.
+// Teams not listed: estimated from current standings.
 const SEED = {
     lastUpdated: "20 มิ.ย. 2026",
     players: [
-        { name: "ก้อง", teams: [
-            { name: "Belgium",     group: "G", pot: 1, status: "alive" },
-            { name: "Morocco",     group: "C", pot: 2, status: "alive" },
-            { name: "Qatar",       group: "B", pot: 3, status: "alive" },
-            { name: "DR Congo",    group: "K", pot: 4, status: "alive" }
+        { name:"ก้อง", teams:[
+            { name:"Belgium",    group:"G", pot:1, qualifyPct:96,
+              played:[{date:"Jun 15",vs:"Egypt",score:"1-1",wdl:"D"}],
+              next:[{date:"Jun 21",vs:"Iran"},{date:"Jun 26",vs:"New Zealand"}] },
+            { name:"Morocco",    group:"C", pot:2, qualifyPct:95,
+              played:[{date:"Jun 13",vs:"Brazil",score:"1-1",wdl:"D"},{date:"Jun 19",vs:"Scotland",score:"1-0",wdl:"W"}],
+              next:[{date:"Jun 24",vs:"Haiti"}] },
+            { name:"Qatar",      group:"B", pot:3, qualifyPct:5,
+              played:[{date:"Jun 12",vs:"Switzerland",score:"1-1",wdl:"D"},{date:"Jun 18",vs:"Canada",score:"0-6",wdl:"L"}],
+              next:[{date:"Jun 24",vs:"Bosnia"}] },
+            { name:"DR Congo",   group:"K", pot:4, qualifyPct:50,
+              played:[{date:"Jun 17",vs:"Portugal",score:"1-1",wdl:"D"}],
+              next:[{date:"Jun 23",vs:"Colombia"},{date:"Jun 27",vs:"Uzbekistan"}] }
         ]},
-        { name: "แว่น", teams: [
-            { name: "Argentina",   group: "J", pot: 1, status: "alive" },
-            { name: "Japan",       group: "F", pot: 2, status: "alive" },
-            { name: "Scotland",    group: "C", pot: 3, status: "alive" },
-            { name: "New Zealand", group: "G", pot: 4, status: "alive" }
+        { name:"แว่น", teams:[
+            { name:"Argentina",  group:"J", pot:1, qualifyPct:99,
+              played:[{date:"Jun 16",vs:"Algeria",score:"3-0",wdl:"W"}],
+              next:[{date:"Jun 22",vs:"Austria"},{date:"Jun 27",vs:"Jordan"}] },
+            { name:"Japan",      group:"F", pot:2, qualifyPct:87,
+              played:[{date:"Jun 14",vs:"Netherlands",score:"2-2",wdl:"D"}],
+              next:[{date:"Jun 20",vs:"Tunisia"},{date:"Jun 25",vs:"Sweden"}] },
+            { name:"Scotland",   group:"C", pot:3, qualifyPct:75,
+              played:[{date:"Jun 13",vs:"Haiti",score:"1-0",wdl:"W"},{date:"Jun 19",vs:"Morocco",score:"0-1",wdl:"L"}],
+              next:[{date:"Jun 24",vs:"Brazil"}] },
+            { name:"New Zealand",group:"G", pot:4, qualifyPct:40,
+              played:[{date:"Jun 15",vs:"Iran",score:"2-2",wdl:"D"}],
+              next:[{date:"Jun 21",vs:"Egypt"},{date:"Jun 26",vs:"Belgium"}] }
         ]},
-        { name: "มิว", teams: [
-            { name: "France",      group: "I", pot: 1, status: "alive" },
-            { name: "Uruguay",     group: "H", pot: 2, status: "alive" },
-            { name: "Tunisia",     group: "F", pot: 3, status: "alive" },
-            { name: "Cabo Verde",  group: "H", pot: 4, status: "alive" }
+        { name:"มิว", teams:[
+            { name:"France",     group:"I", pot:1, qualifyPct:98,
+              played:[{date:"Jun 16",vs:"Senegal",score:"3-1",wdl:"W"}],
+              next:[{date:"Jun 22",vs:"Iraq"},{date:"Jun 26",vs:"Norway"}] },
+            { name:"Uruguay",    group:"H", pot:2, qualifyPct:80,
+              played:[{date:"Jun 15",vs:"Saudi Arabia",score:"1-1",wdl:"D"}],
+              next:[{date:"Jun 21",vs:"Cabo Verde"},{date:"Jun 26",vs:"Spain"}] },
+            { name:"Tunisia",    group:"F", pot:3, qualifyPct:8,
+              played:[{date:"Jun 14",vs:"Sweden",score:"1-5",wdl:"L"}],
+              next:[{date:"Jun 20",vs:"Japan"},{date:"Jun 25",vs:"Netherlands"}] },
+            { name:"Cabo Verde", group:"H", pot:4, qualifyPct:52,
+              played:[{date:"Jun 15",vs:"Spain",score:"0-0",wdl:"D"}],
+              next:[{date:"Jun 21",vs:"Uruguay"},{date:"Jun 26",vs:"Saudi Arabia"}] }
         ]},
-        { name: "นุ", teams: [
-            { name: "Spain",        group: "H", pot: 1, status: "alive" },
-            { name: "Croatia",      group: "L", pot: 2, status: "alive" },
-            { name: "South Africa", group: "A", pot: 3, status: "alive" },
-            { name: "Jordan",       group: "J", pot: 4, status: "alive" }
+        { name:"นุ", teams:[
+            { name:"Spain",       group:"H", pot:1, qualifyPct:99,
+              played:[{date:"Jun 15",vs:"Cabo Verde",score:"0-0",wdl:"D"}],
+              next:[{date:"Jun 21",vs:"Saudi Arabia"},{date:"Jun 26",vs:"Uruguay"}] },
+            { name:"Croatia",     group:"L", pot:2, qualifyPct:76,
+              played:[{date:"Jun 17",vs:"England",score:"2-4",wdl:"L"}],
+              next:[{date:"Jun 23",vs:"Panama"},{date:"Jun 27",vs:"Ghana"}] },
+            { name:"South Africa",group:"A", pot:3, qualifyPct:15,
+              played:[{date:"Jun 11",vs:"Mexico",score:"0-2",wdl:"L"},{date:"Jun 18",vs:"Czech Republic",score:"1-1",wdl:"D"}],
+              next:[{date:"Jun 24",vs:"South Korea"}] },
+            { name:"Jordan",      group:"J", pot:4, qualifyPct:3,
+              played:[{date:"Jun 16",vs:"Austria",score:"1-3",wdl:"L"}],
+              next:[{date:"Jun 22",vs:"Algeria"},{date:"Jun 27",vs:"Argentina"}] }
         ]},
-        { name: "ตือ", teams: [
-            { name: "Germany",     group: "E", pot: 1, status: "alive" },
-            { name: "Australia",   group: "D", pot: 2, status: "alive" },
-            { name: "Algeria",     group: "J", pot: 3, status: "alive" },
-            { name: "Ghana",       group: "L", pot: 4, status: "alive" }
+        { name:"ตือ", teams:[
+            { name:"Germany",  group:"E", pot:1, qualifyPct:99,
+              played:[{date:"Jun 14",vs:"Curaçao",score:"7-1",wdl:"W"}],
+              next:[{date:"Jun 20",vs:"Ivory Coast"},{date:"Jun 25",vs:"Ecuador"}] },
+            { name:"Australia",group:"D", pot:2, qualifyPct:92,
+              played:[{date:"Jun 13",vs:"Turkey",score:"2-0",wdl:"W"},{date:"Jun 19",vs:"USA",score:"0-2",wdl:"L"}],
+              next:[{date:"Jun 25",vs:"Paraguay"}] },
+            { name:"Algeria",  group:"J", pot:3, qualifyPct:63,
+              played:[{date:"Jun 16",vs:"Argentina",score:"0-3",wdl:"L"}],
+              next:[{date:"Jun 22",vs:"Jordan"},{date:"Jun 27",vs:"Austria"}] },
+            { name:"Ghana",    group:"L", pot:4, qualifyPct:80,
+              played:[{date:"Jun 17",vs:"Panama",score:"1-0",wdl:"W"}],
+              next:[{date:"Jun 23",vs:"England"},{date:"Jun 27",vs:"Croatia"}] }
         ]},
-        { name: "พิม", teams: [
-            { name: "England",     group: "L", pot: 1, status: "alive" },
-            { name: "Austria",     group: "J", pot: 2, status: "alive" },
-            { name: "Paraguay",    group: "D", pot: 3, status: "alive" },
-            { name: "Curaçao",    group: "E", pot: 4, status: "alive" }
+        { name:"พิม", teams:[
+            { name:"England",  group:"L", pot:1, qualifyPct:99,
+              played:[{date:"Jun 17",vs:"Croatia",score:"4-2",wdl:"W"}],
+              next:[{date:"Jun 23",vs:"Ghana"},{date:"Jun 27",vs:"Panama"}] },
+            { name:"Austria",  group:"J", pot:2, qualifyPct:96,
+              played:[{date:"Jun 16",vs:"Jordan",score:"3-1",wdl:"W"}],
+              next:[{date:"Jun 22",vs:"Argentina"},{date:"Jun 27",vs:"Algeria"}] },
+            { name:"Paraguay", group:"D", pot:3, qualifyPct:87,
+              played:[{date:"Jun 12",vs:"USA",score:"1-4",wdl:"L"},{date:"Jun 19",vs:"Turkey",score:"1-0",wdl:"W"}],
+              next:[{date:"Jun 25",vs:"Australia"}] },
+            { name:"Curaçao",  group:"E", pot:4, qualifyPct:3,
+              played:[{date:"Jun 14",vs:"Germany",score:"1-7",wdl:"L"}],
+              next:[{date:"Jun 20",vs:"Ecuador"},{date:"Jun 25",vs:"Ivory Coast"}] }
         ]},
-        { name: "บลู", teams: [
-            { name: "Netherlands", group: "F", pot: 1, status: "alive" },
-            { name: "Switzerland", group: "B", pot: 2, status: "qualified" },
-            { name: "Norway",      group: "I", pot: 3, status: "alive" },
-            { name: "Haiti",       group: "C", pot: 4, status: "eliminated" }
+        { name:"บลู", teams:[
+            { name:"Netherlands",group:"F", pot:1, qualifyPct:93,
+              played:[{date:"Jun 14",vs:"Japan",score:"2-2",wdl:"D"}],
+              next:[{date:"Jun 20",vs:"Sweden"},{date:"Jun 25",vs:"Tunisia"}] },
+            { name:"Switzerland",group:"B", pot:2, qualifyPct:100,
+              played:[{date:"Jun 12",vs:"Qatar",score:"1-1",wdl:"D"},{date:"Jun 18",vs:"Bosnia",score:"4-1",wdl:"W"}],
+              next:[{date:"Jun 24",vs:"Canada"}] },
+            { name:"Norway",     group:"I", pot:3, qualifyPct:99,
+              played:[{date:"Jun 16",vs:"Iraq",score:"4-1",wdl:"W"}],
+              next:[{date:"Jun 22",vs:"Senegal"},{date:"Jun 26",vs:"France"}] },
+            { name:"Haiti",      group:"C", pot:4, qualifyPct:0,
+              played:[{date:"Jun 13",vs:"Scotland",score:"0-1",wdl:"L"},{date:"Jun 19",vs:"Brazil",score:"0-3",wdl:"L"}],
+              next:[] }
         ]},
-        { name: "อาม", teams: [
-            { name: "Portugal",    group: "K", pot: 1, status: "alive" },
-            { name: "Senegal",     group: "I", pot: 2, status: "alive" },
-            { name: "Uzbekistan",  group: "K", pot: 3, status: "alive" },
-            { name: "Iraq",        group: "I", pot: 4, status: "alive" }
+        { name:"อาม", teams:[
+            { name:"Portugal",   group:"K", pot:1, qualifyPct:98,
+              played:[{date:"Jun 17",vs:"DR Congo",score:"1-1",wdl:"D"}],
+              next:[{date:"Jun 23",vs:"Uzbekistan"},{date:"Jun 27",vs:"Colombia"}] },
+            { name:"Senegal",    group:"I", pot:2, qualifyPct:67,
+              played:[{date:"Jun 16",vs:"France",score:"1-3",wdl:"L"}],
+              next:[{date:"Jun 22",vs:"Norway"},{date:"Jun 26",vs:"Iraq"}] },
+            { name:"Uzbekistan", group:"K", pot:3, qualifyPct:10,
+              played:[{date:"Jun 17",vs:"Colombia",score:"1-3",wdl:"L"}],
+              next:[{date:"Jun 23",vs:"Portugal"},{date:"Jun 27",vs:"DR Congo"}] },
+            { name:"Iraq",       group:"I", pot:4, qualifyPct:3,
+              played:[{date:"Jun 16",vs:"Norway",score:"1-4",wdl:"L"}],
+              next:[{date:"Jun 22",vs:"France"},{date:"Jun 26",vs:"Senegal"}] }
         ]},
-        { name: "เรีย", teams: [
-            { name: "Brazil",      group: "C", pot: 1, status: "alive" },
-            { name: "Ecuador",     group: "E", pot: 2, status: "alive" },
-            { name: "Egypt",       group: "G", pot: 3, status: "alive" },
-            { name: "Turkey",      group: "D", pot: 4, status: "eliminated" }
+        { name:"เรีย", teams:[
+            { name:"Brazil",   group:"C", pot:1, qualifyPct:99,
+              played:[{date:"Jun 13",vs:"Morocco",score:"1-1",wdl:"D"},{date:"Jun 19",vs:"Haiti",score:"3-0",wdl:"W"}],
+              next:[{date:"Jun 24",vs:"Scotland"}] },
+            { name:"Ecuador",  group:"E", pot:2, qualifyPct:83,
+              played:[{date:"Jun 14",vs:"Ivory Coast",score:"0-1",wdl:"L"}],
+              next:[{date:"Jun 20",vs:"Curaçao"},{date:"Jun 25",vs:"Germany"}] },
+            { name:"Egypt",    group:"G", pot:3, qualifyPct:87,
+              played:[{date:"Jun 15",vs:"Belgium",score:"1-1",wdl:"D"}],
+              next:[{date:"Jun 21",vs:"New Zealand"},{date:"Jun 26",vs:"Iran"}] },
+            { name:"Turkey",   group:"D", pot:4, qualifyPct:0,
+              played:[{date:"Jun 13",vs:"Australia",score:"0-2",wdl:"L"},{date:"Jun 19",vs:"Paraguay",score:"0-1",wdl:"L"}],
+              next:[] }
         ]}
     ]
 };
 
-// ── App ─────────────────────────────────────────────────────────────────────
+// ── Helpers ─────────────────────────────────────────────────────────────────
+function getStatus(pct) {
+    if (pct >= 100) return 'qualified';
+    if (pct <= 0)   return 'eliminated';
+    return 'alive';
+}
+
+function pctColor(pct) {
+    if (pct >= 80) return 'var(--green)';
+    if (pct >= 40) return 'var(--yellow)';
+    return 'var(--red)';
+}
+
+const BADGE_LABEL = {
+    qualified: '✅ เข้ารอบ',
+    alive:     '🟡 ยังลุ้น',
+    eliminated:'❌ ตกรอบ'
+};
+
+// ── Popup ────────────────────────────────────────────────────────────────────
+let openKey = null;
+
+function togglePopup(pi, ti, cardEl) {
+    const key = `${pi}-${ti}`;
+    if (openKey === key) { closePopup(); return; }
+    openKey = key;
+
+    const team = data.players[pi].teams[ti];
+    const popup = document.getElementById('popup');
+    popup.innerHTML = buildPopup(team);
+    positionPopup(cardEl);
+    document.getElementById('popupOverlay').classList.add('active');
+}
+
+function closePopup() {
+    document.getElementById('popupOverlay').classList.remove('active');
+    openKey = null;
+}
+
+function positionPopup(cardEl) {
+    const popup = document.getElementById('popup');
+    if (window.innerWidth <= 780) return; // CSS handles mobile (bottom sheet)
+
+    const rect = cardEl.getBoundingClientRect();
+    const pw = 268, ph = 280;
+    let left = rect.left + rect.width / 2 - pw / 2;
+    left = Math.max(8, Math.min(left, window.innerWidth - pw - 8));
+
+    const spaceBelow = window.innerHeight - rect.bottom;
+    if (spaceBelow >= ph + 12) {
+        popup.style.top  = (rect.bottom + 8) + 'px';
+        popup.style.transform = 'translateY(0)';
+    } else {
+        popup.style.top  = (rect.top - 8) + 'px';
+        popup.style.transform = 'translateY(-100%)';
+    }
+    popup.style.left   = left + 'px';
+    popup.style.bottom = 'auto';
+}
+
+function buildPopup(team) {
+    const flag   = FLAGS[team.name] || '🏳️';
+    const status = getStatus(team.qualifyPct);
+    const pc     = pctColor(team.qualifyPct);
+
+    // Played matches
+    let playedHtml = '';
+    if (team.played && team.played.length) {
+        playedHtml = `
+        <div class="popup-section">
+            <div class="popup-section-title">📋 ผลการแข่งขัน</div>
+            ${team.played.map(m => `
+                <div class="popup-match">
+                    <span class="popup-date">${m.date}</span>
+                    <span>vs ${m.vs}</span>
+                    <span class="popup-score">${m.score}</span>
+                    <span class="popup-wdl wdl-${m.wdl}">${m.wdl}</span>
+                </div>`).join('')}
+        </div>`;
+    }
+
+    // Upcoming matches
+    let nextHtml = '';
+    if (team.next && team.next.length && status !== 'eliminated') {
+        nextHtml = `
+        <div class="popup-section">
+            <div class="popup-section-title">📅 โปรแกรมต่อไป</div>
+            ${team.next.map(m => {
+                const isToday = m.date === TODAY_DATE;
+                return `
+                <div class="popup-match">
+                    <span class="popup-date">${m.date}</span>
+                    ${isToday ? '<span class="today-badge">TODAY</span>' : ''}
+                    <span>vs ${m.vs}</span>
+                </div>`;
+            }).join('')}
+        </div>`;
+    }
+
+    // Qualify %
+    const pctHtml = `
+        <div class="popup-section">
+            <div class="popup-section-title">📊 โอกาสเข้ารอบ 32 ทีม (FoxSports)</div>
+            <div class="pct-row">
+                <div class="pct-bar-wrap">
+                    <div class="pct-bar" style="width:${team.qualifyPct}%;background:${pc}"></div>
+                </div>
+                <div class="pct-num" style="color:${pc}">${team.qualifyPct}%</div>
+            </div>
+        </div>`;
+
+    return `
+        <div class="popup-header">
+            <span class="popup-flag">${flag}</span>
+            <div>
+                <div class="popup-title">${team.name}</div>
+                <div class="popup-sub">กลุ่ม ${team.group} · Pot ${team.pot}</div>
+            </div>
+            <button class="popup-close" onclick="closePopup()">×</button>
+        </div>
+        ${playedHtml}
+        ${nextHtml}
+        ${pctHtml}`;
+}
+
+// ── Firebase / render ────────────────────────────────────────────────────────
 let db, data;
 firebase.initializeApp(FIREBASE_CONFIG);
 db = firebase.firestore();
@@ -304,46 +553,40 @@ window.addEventListener('load', async () => {
     });
 });
 
-async function toggleStatus(pi, ti) {
-    if (!data) return;
-    const team = data.players[pi].teams[ti];
-    team.status = CYCLE[team.status];
-    data.lastUpdated = new Date().toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric', calendar: 'gregory' });
-    render();
-    await docRef.set(data);
-}
-
 function render() {
     const board = document.getElementById('board');
 
     board.innerHTML = data.players.map((p, pi) => {
-        const q = p.teams.filter(t => t.status === 'qualified').length;
-        const a = p.teams.filter(t => t.status === 'alive').length;
-        const e = p.teams.filter(t => t.status === 'eliminated').length;
+        const q = p.teams.filter(t => getStatus(t.qualifyPct) === 'qualified').length;
+        const a = p.teams.filter(t => getStatus(t.qualifyPct) === 'alive').length;
+        const e = p.teams.filter(t => getStatus(t.qualifyPct) === 'eliminated').length;
 
-        const cards = p.teams.map((t, ti) => `
-            <div class="team-card s-${t.status}" onclick="toggleStatus(${pi},${ti})" title="คลิกเพื่อเปลี่ยนสถานะ">
+        const cards = p.teams.map((t, ti) => {
+            const st = getStatus(t.qualifyPct);
+            return `
+            <div class="team-card s-${st}" onclick="togglePopup(${pi},${ti},this)">
                 <div class="pot-lbl">P${t.pot}</div>
                 <div class="team-flag">${FLAGS[t.name] || '🏳️'}</div>
                 <div class="team-name">${t.name}</div>
                 <div class="team-group">กลุ่ม ${t.group}</div>
-                <div class="team-badge">${BADGE[t.status]}</div>
-            </div>`).join('');
+                <div class="team-badge">${BADGE_LABEL[st]}</div>
+            </div>`;
+        }).join('');
 
         return `
-            <div class="player-row">
-                <div class="player-name">${p.name}</div>
-                <div class="teams-wrap">${cards}</div>
-                <div class="score-cell">
-                    <div class="score-big">${q}<span style="font-size:1rem;color:var(--muted)">/4</span></div>
-                    <div class="score-sub">เข้ารอบ</div>
-                    <div class="score-detail">${a} ลุ้น · ${e} ตก</div>
-                </div>
-            </div>`;
+        <div class="player-row">
+            <div class="player-name">${p.name}</div>
+            <div class="teams-wrap">${cards}</div>
+            <div class="score-cell">
+                <div class="score-big">${q}<span style="font-size:1rem;color:var(--muted)">/4</span></div>
+                <div class="score-sub">เข้ารอบ</div>
+                <div class="score-detail">${a} ลุ้น · ${e} ตก</div>
+            </div>
+        </div>`;
     }).join('');
 
     const footer = document.getElementById('footer');
-    footer.textContent = data.lastUpdated ? `อัปเดตล่าสุด: ${data.lastUpdated}` : '';
+    footer.textContent = data.lastUpdated ? `อัปเดตล่าสุด: ${data.lastUpdated} · ข้อมูลโอกาส: FoxSports` : '';
 }
 </script>
 </body>
