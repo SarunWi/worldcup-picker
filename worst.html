@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worst Pick 2026</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg:     #0d1b2a;
+            --card:   #162231;
+            --border: #243447;
+            --green:  #4caf50;
+            --gold:   #ffd700;
+            --text:   #dce8f0;
+            --muted:  #5a7080;
+            --yellow: #f9a825;
+            --red:    #e53935;
+        }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+        header {
+            background: linear-gradient(135deg, #190505, #2c0d0d);
+            border-bottom: 2px solid var(--red);
+            padding: 14px 20px;
+        }
+        .header-inner {
+            max-width: 900px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+        }
+        header h1 { font-size: 1.4rem; font-weight: 700; }
+        .header-sub { color: var(--muted); font-size: .78rem; margin-top: 3px; }
+        .back-btn {
+            background: #1a2e3e; border: 1px solid var(--border);
+            color: var(--text); padding: 7px 14px; border-radius: 7px;
+            text-decoration: none; font-size: .82rem;
+        }
+        .back-btn:hover { border-color: var(--red); }
+        .lang-btn {
+            background: #1a2e3e; border: 1px solid var(--border);
+            color: var(--text); padding: 7px 14px; border-radius: 7px;
+            font-size: .82rem; cursor: pointer; font-weight: 700; letter-spacing: 1px;
+        }
+        .lang-btn:hover { border-color: var(--red); }
+
+        .main { max-width: 900px; margin: 0 auto; padding: 16px; }
+
+        /* Section labels */
+        .section-label {
+            font-size: .68rem; text-transform: uppercase; letter-spacing: 1.5px;
+            font-weight: 700; margin-bottom: 10px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .section-label::after { content: ''; flex: 1; height: 1px; }
+        .sl-shame { color: var(--red); }
+        .sl-shame::after { background: rgba(229,57,53,.28); }
+        .sl-neutral { color: var(--muted); }
+        .sl-neutral::after { background: var(--border); }
+
+        /* Shame crown */
+        .shame-crown {
+            background: linear-gradient(135deg, #1c0606, #200e0e);
+            border: 2px solid var(--red);
+            border-radius: 14px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 22px;
+            align-items: flex-start;
+            box-shadow: 0 0 32px rgba(229,57,53,.12);
+        }
+        .crown-flag { width: 90px; height: auto; border-radius: 5px; box-shadow: 0 2px 14px rgba(0,0,0,.6); flex-shrink: 0; margin-top: 2px; }
+        .crown-body { flex: 1; min-width: 0; }
+        .crown-team-name { font-size: 1.75rem; font-weight: 900; line-height: 1; }
+        .crown-meta { color: var(--muted); font-size: .78rem; margin-top: 4px; }
+        .crown-owned { margin-top: 10px; font-size: .88rem; }
+        .crown-owned strong { color: var(--red); font-size: 1.05rem; }
+        .crown-divider { height: 1px; background: rgba(229,57,53,.2); margin: 14px 0; }
+        .crown-stats { display: flex; gap: 28px; }
+        .crown-stat-val { font-size: 2.2rem; font-weight: 900; color: var(--red); line-height: 1; }
+        .crown-stat-lbl { font-size: .58rem; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin-top: 3px; }
+        .crown-matches { margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
+        .crown-match { display: flex; align-items: center; gap: 8px; font-size: .82rem; }
+        .crown-match-date { color: var(--muted); font-size: .72rem; width: 50px; flex-shrink: 0; }
+        .crown-match-vs { flex: 1; }
+        .crown-match-score { font-weight: 700; flex-shrink: 0; }
+        .crown-match-wdl { font-size: .65rem; font-weight: 900; padding: 1px 5px; border-radius: 4px; flex-shrink: 0; }
+        .wdl-W { background: rgba(76,175,80,.2);   color: var(--green); }
+        .wdl-D { background: rgba(249,168,37,.15); color: var(--yellow); }
+        .wdl-L { background: rgba(229,57,53,.2);   color: var(--red); }
+
+        /* Player leaderboard */
+        .ps-header, .player-shame-row {
+            display: grid;
+            grid-template-columns: 32px 1fr 40px 40px;
+            gap: 8px;
+            align-items: center;
+            padding: 0 12px;
+        }
+        .ps-header {
+            padding-bottom: 6px;
+            font-size: .6rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .8px; color: var(--muted); text-align: center;
+        }
+        .ps-header .psh-left { text-align: left; }
+        .player-shame-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 24px; }
+        .player-shame-row {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding-top: 10px; padding-bottom: 10px;
+        }
+        .player-shame-row.ps-top { border-color: var(--red); background: rgba(229,57,53,.06); }
+        .ps-rank { font-weight: 900; font-size: .88rem; color: var(--muted); text-align: center; }
+        .ps-top .ps-rank { color: var(--red); }
+        .ps-name { font-weight: 700; font-size: .9rem; }
+        .ps-worst-team { font-size: .68rem; color: var(--muted); margin-top: 2px; }
+        .ps-val { text-align: center; font-weight: 700; font-size: .88rem; }
+        .ps-val.pv-bad { color: var(--red); }
+        .ps-val.pv-ok  { color: var(--muted); }
+
+        /* Team ranking */
+        .rank-header, .rank-row {
+            display: grid;
+            grid-template-columns: 36px 38px 1fr 76px 32px 32px 32px;
+            gap: 6px;
+            padding: 0 10px;
+            align-items: center;
+        }
+        .rank-header {
+            padding-bottom: 6px;
+            font-size: .6rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .8px; color: var(--muted); text-align: center;
+        }
+        .rank-header .rhc-left { text-align: left; }
+        .rank-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 20px; }
+        .rank-row {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding-top: 8px; padding-bottom: 8px;
+            font-size: .82rem;
+        }
+        .rank-row.r-1 { border-color: var(--red); background: rgba(229,57,53,.07); }
+        .rank-row.r-2 { border-color: rgba(229,57,53,.45); }
+        .rank-row.r-3 { border-color: rgba(229,57,53,.22); }
+        .rank-row.r-safe { opacity: .5; }
+        .rn { font-weight: 900; font-size: .85rem; color: var(--muted); text-align: center; }
+        .r-1 .rn { color: var(--red); font-size: 1rem; }
+        .rflag { width: 30px; height: auto; border-radius: 2px; display: block; }
+        .rteam { font-weight: 600; font-size: .82rem; }
+        .rplayer { font-size: .68rem; color: var(--muted); margin-top: 1px; }
+        .rv { text-align: center; font-weight: 700; }
+        .rv.bad { color: var(--red); }
+        .rv.ok  { color: var(--muted); }
+
+        .footer {
+            text-align: center; color: var(--muted); font-size: .73rem;
+            margin-top: 18px; padding-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .shame-crown { flex-direction: column; gap: 14px; }
+            .crown-flag  { width: 72px; }
+            .rank-header { display: none; }
+            .rank-row {
+                /* drop GP column on mobile: 6 cols instead of 7 */
+                grid-template-columns: 28px 30px 1fr 56px 26px 26px;
+            }
+            .rank-row > :nth-child(5) { display: none; }
+            .ps-header { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-inner">
+        <div>
+            <h1 id="h-title">💀 Worst Pick 2026</h1>
+            <div class="header-sub" id="h-sub"></div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+            <a class="back-btn" href="scoreboard.html" id="h-sb">← Scoreboard</a>
+            <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+        </div>
+    </div>
+</header>
+
+<div class="main">
+    <div id="crownSection"></div>
+    <div id="playerSection"></div>
+    <div id="rankSection"></div>
+    <div class="footer" id="footer"></div>
+</div>
+
+<script>
+
+const FLAG_CODES = {
+    "Belgium":"be","Morocco":"ma","Qatar":"qa","DR Congo":"cd",
+    "Argentina":"ar","Japan":"jp","Scotland":"gb-sct","New Zealand":"nz",
+    "France":"fr","Uruguay":"uy","Tunisia":"tn","Cabo Verde":"cv",
+    "Spain":"es","Croatia":"hr","South Africa":"za","Jordan":"jo",
+    "Germany":"de","Australia":"au","Algeria":"dz","Ghana":"gh",
+    "England":"gb-eng","Austria":"at","Paraguay":"py","Curaçao":"cw",
+    "Netherlands":"nl","Switzerland":"ch","Norway":"no","Haiti":"ht",
+    "Portugal":"pt","Senegal":"sn","Uzbekistan":"uz","Iraq":"iq",
+    "Brazil":"br","Ecuador":"ec","Egypt":"eg","Turkey":"tr"
+};
+
+function flagImg(name, w) {
+    const code = FLAG_CODES[name];
+    if (!code) return `<span style="font-size:1.4rem">🏳️</span>`;
+    return `<img src="https://flagcdn.com/w80/${code}.png" alt="${name}" loading="lazy" style="width:${w}px;height:auto;border-radius:3px;display:block">`;
+}
+
+const PLAYER_EN = {
+    "ก้อง":"Kong","แว่น":"OakVaan","มิว":"Mew",
+    "นุ":"Nuu","ตือ":"Oou","พิม":"Pim",
+    "บลู":"Chablue","อาม":"Arm","เรีย":"Lea"
+};
+
+const STRINGS = {
+    th: {
+        title:      "Worst Pick 2026",
+        subtitle:   "ทีมที่แย่ที่สุดจะได้รับรางวัลพิเศษ — นับจากแพ้ + ประตูที่เสีย",
+        backBtn:    "← หน้าสรุป",
+        crownLabel: "💀 แชมป์ความอับอาย (ตอนนี้)",
+        crownOwned: (name) => `ของ`,
+        crownOwnedName: (name) => name,
+        crownLosses:  "ครั้งที่แพ้",
+        crownGA:      "ประตูที่เสีย",
+        crownGP:      "นัดที่แข่ง",
+        playerLabel:  "📊 สรุปรายผู้เล่น (รวมทุกทีม)",
+        psPlayer:     "ผู้เล่น",
+        psWorstTeam:  "ทีมที่แย่สุด",
+        psTotalL:     "แพ้",
+        psTotalGA:    "เสียประตู",
+        rankLabel:    "🏴 อันดับความแย่ — ทุกทีม",
+        rankNum:      "#",
+        rankTeam:     "ทีม",
+        rankPlayer:   "ผู้เล่น",
+        rankGP:       "GP",
+        rankL:        "L",
+        rankGA:       "GA",
+        lastUpdated:  d => `อัปเดตล่าสุด: ${d}`,
+    },
+    en: {
+        title:      "Worst Pick 2026",
+        subtitle:   "The worst team wins the shame award — ranked by losses + goals conceded",
+        backBtn:    "← Scoreboard",
+        crownLabel: "💀 Current Shame Champion",
+        crownOwned: (name) => `Owned by`,
+        crownOwnedName: (name) => name,
+        crownLosses:  "Losses",
+        crownGA:      "Goals conceded",
+        crownGP:      "Played",
+        playerLabel:  "📊 Player Summary (all teams combined)",
+        psPlayer:     "Player",
+        psWorstTeam:  "Worst team",
+        psTotalL:     "Total L",
+        psTotalGA:    "Total GA",
+        rankLabel:    "🏴 Shame Ranking — All Teams",
+        rankNum:      "#",
+        rankTeam:     "Team",
+        rankPlayer:   "Player",
+        rankGP:       "GP",
+        rankL:        "L",
+        rankGA:       "GA",
+        lastUpdated:  d => `Last updated: ${d}`,
+    }
+};
+
+let lang = localStorage.getItem('wc-lang') || 'th';
+
+function toggleLang() {
+    lang = lang === 'th' ? 'en' : 'th';
+    localStorage.setItem('wc-lang', lang);
+    render();
+}
+
+function pname(thName) {
+    return lang === 'en' ? (PLAYER_EN[thName] || thName) : thName;
+}
+
+const SEED = {
+    lastUpdated: "20 มิ.ย. 2026",
+    players: [
+        { name:"ก้อง", teams:[
+            { name:"Belgium",    group:"G", pot:1, qualifyPct:96,
+              played:[{date:"Jun 15",vs:"Egypt",score:"1-1",wdl:"D"}],
+              next:[{date:"Jun 21",vs:"Iran"},{date:"Jun 26",vs:"New Zealand"}] },
+            { name:"Morocco",    group:"C", pot:2, qualifyPct:95,
+              played:[{date:"Jun 13",vs:"Brazil",score:"1-1",wdl:"D"},{date:"Jun 19",vs:"Scotland",score:"1-0",wdl:"W"}],
+              next:[{date:"Jun 24",vs:"Haiti"}] },
+            { name:"Qatar",      group:"B", pot:3, qualifyPct:5,
+              played:[{date:"Jun 12",vs:"Switzerland",score:"1-1",wdl:"D"},{date:"Jun 18",vs:"Canada",score:"0-6",wdl:"L"}],
+              next:[{date:"Jun 24",vs:"Bosnia"}] },
+            { name:"DR Congo",   group:"K", pot:4, qualifyPct:50,
+              played:[{date:"Jun 17",vs:"Portugal",score:"1-1",wdl:"D"}],
+              next:[{date:"Jun 23",vs:"Colombia"},{date:"Jun 27",vs:"Uzbekistan"}] }
+        ]},
+        { name:"แว่น", teams:[
+            { name:"Argentina",  group:"J", pot:1, qualifyPct:99,
+              played:[{date:"Jun 16",vs:"Algeria",score:"3-0",wdl:"W"}],
+              next:[{date:"Jun 22",vs:"Austria"},{date:"Jun 27",vs:"Jordan"}] },
+            { name:"Japan",      group:"F", pot:2, qualifyPct:87,
+              played:[{date:"Jun 14",vs:"Netherlands",score:"2-2",wdl:"D"}],
+              next:[{date:"Jun 20",vs:"Tunisia"},{date:"Jun 25",vs:"Sweden"}] },
+            { name:"Scotland",   group:"C", pot:3, qualifyPct:75,
+              played:[{date:"Jun 13",vs:"Haiti",score:"1-0",wdl:"W"},{date:"Jun 19",vs:"Morocco",score:"0-1",wdl:"L"}],
+              next:[{date:"Jun 24",vs:"Brazil"}] },
+            { name:"New Zealand",group:"G", pot:4, qualifyPct:40,
+              played:[{date:"Jun 15",vs:"Iran",score:"2-2",wdl:"D"}],
+              next:[{date:"Jun 21",vs:"Egypt"},{date:"Jun 26",vs:"Belgium"}] }
+        ]},
+        { name:"มิว", teams:[
+            { name:"France",     group:"I", pot:1, qualifyPct:98,
+              played:[{date:"Jun 16",vs:"Senegal",score:"3-1",wdl:"W"}],
+              next:[{date:"Jun 22",vs:"Iraq"},{date:"Jun 26",vs:"Norway"}] },
+            { name:"Uruguay",    group:"H", pot:2, qualifyPct:80,
+              played:[{date:"Jun 15",vs:"Saudi Arabia",score:"1-1",wdl:"D"}],
+              next:[{date:"Jun 21",vs:"Cabo Verde"},{date:"Jun 26",vs:"Spain"}] },
+            { name:"Tunisia",    group:"F", pot:3, qualifyPct:8,
+              played:[{date:"Jun 14",vs:"Sweden",score:"1-5",wdl:"L"}],
+              next:[{date:"Jun 20",vs:"Japan"},{date:"Jun 25",vs:"Netherlands"}] },
+            { name:"Cabo Verde", group:"H", pot:4, qualifyPct:52,
+              played:[{date:"Jun 15",vs:"Spain",score:"0-0",wdl:"D"}],
+              next:[{date:"Jun 21",vs:"Uruguay"},{date:"Jun 26",vs:"Saudi Arabia"}] }
+        ]},
+        { name:"นุ", teams:[
+            { name:"Spain",       group:"H", pot:1, qualifyPct:99,
+              played:[{date:"Jun 15",vs:"Cabo Verde",score:"0-0",wdl:"D"}],
+              next:[{date:"Jun 21",vs:"Saudi Arabia"},{date:"Jun 26",vs:"Uruguay"}] },
+            { name:"Croatia",     group:"L", pot:2, qualifyPct:76,
+              played:[{date:"Jun 17",vs:"England",score:"2-4",wdl:"L"}],
+              next:[{date:"Jun 23",vs:"Panama"},{date:"Jun 27",vs:"Ghana"}] },
+            { name:"South Africa",group:"A", pot:3, qualifyPct:15,
+              played:[{date:"Jun 11",vs:"Mexico",score:"0-2",wdl:"L"},{date:"Jun 18",vs:"Czech Republic",score:"1-1",wdl:"D"}],
+              next:[{date:"Jun 24",vs:"South Korea"}] },
+            { name:"Jordan",      group:"J", pot:4, qualifyPct:3,
+              played:[{date:"Jun 16",vs:"Austria",score:"1-3",wdl:"L"}],
+              next:[{date:"Jun 22",vs:"Algeria"},{date:"Jun 27",vs:"Argentina"}] }
+        ]},
+        { name:"ตือ", teams:[
+            { name:"Germany",  group:"E", pot:1, qualifyPct:99,
+              played:[{date:"Jun 14",vs:"Curaçao",score:"7-1",wdl:"W"}],
+              next:[{date:"Jun 20",vs:"Ivory Coast"},{date:"Jun 25",vs:"Ecuador"}] },
+            { name:"Australia",group:"D", pot:2, qualifyPct:92,
+              played:[{date:"Jun 13",vs:"Turkey",score:"2-0",wdl:"W"},{date:"Jun 19",vs:"USA",score:"0-2",wdl:"L"}],
+              next:[{date:"Jun 25",vs:"Paraguay"}] },
+            { name:"Algeria",  group:"J", pot:3, qualifyPct:63,
+              played:[{date:"Jun 16",vs:"Argentina",score:"0-3",wdl:"L"}],
+              next:[{date:"Jun 22",vs:"Jordan"},{date:"Jun 27",vs:"Austria"}] },
+            { name:"Ghana",    group:"L", pot:4, qualifyPct:80,
+              played:[{date:"Jun 17",vs:"Panama",score:"1-0",wdl:"W"}],
+              next:[{date:"Jun 23",vs:"England"},{date:"Jun 27",vs:"Croatia"}] }
+        ]},
+        { name:"พิม", teams:[
+            { name:"England",  group:"L", pot:1, qualifyPct:99,
+              played:[{date:"Jun 17",vs:"Croatia",score:"4-2",wdl:"W"}],
+              next:[{date:"Jun 23",vs:"Ghana"},{date:"Jun 27",vs:"Panama"}] },
+            { name:"Austria",  group:"J", pot:2, qualifyPct:96,
+              played:[{date:"Jun 16",vs:"Jordan",score:"3-1",wdl:"W"}],
+              next:[{date:"Jun 22",vs:"Argentina"},{date:"Jun 27",vs:"Algeria"}] },
+            { name:"Paraguay", group:"D", pot:3, qualifyPct:87,
+              played:[{date:"Jun 12",vs:"USA",score:"1-4",wdl:"L"},{date:"Jun 19",vs:"Turkey",score:"1-0",wdl:"W"}],
+              next:[{date:"Jun 25",vs:"Australia"}] },
+            { name:"Curaçao",  group:"E", pot:4, qualifyPct:3,
+              played:[{date:"Jun 14",vs:"Germany",score:"1-7",wdl:"L"}],
+              next:[{date:"Jun 20",vs:"Ecuador"},{date:"Jun 25",vs:"Ivory Coast"}] }
+        ]},
+        { name:"บลู", teams:[
+            { name:"Netherlands",group:"F", pot:1, qualifyPct:93,
+              played:[{date:"Jun 14",vs:"Japan",score:"2-2",wdl:"D"}],
+              next:[{date:"Jun 20",vs:"Sweden"},{date:"Jun 25",vs:"Tunisia"}] },
+            { name:"Switzerland",group:"B", pot:2, qualifyPct:100,
+              played:[{date:"Jun 12",vs:"Qatar",score:"1-1",wdl:"D"},{date:"Jun 18",vs:"Bosnia",score:"4-1",wdl:"W"}],
+              next:[{date:"Jun 24",vs:"Canada"}] },
+            { name:"Norway",     group:"I", pot:3, qualifyPct:99,
+              played:[{date:"Jun 16",vs:"Iraq",score:"4-1",wdl:"W"}],
+              next:[{date:"Jun 22",vs:"Senegal"},{date:"Jun 26",vs:"France"}] },
+            { name:"Haiti",      group:"C", pot:4, qualifyPct:0,
+              played:[{date:"Jun 13",vs:"Scotland",score:"0-1",wdl:"L"},{date:"Jun 19",vs:"Brazil",score:"0-3",wdl:"L"}],
+              next:[] }
+        ]},
+        { name:"อาม", teams:[
+            { name:"Portugal",   group:"K", pot:1, qualifyPct:98,
+              played:[{date:"Jun 17",vs:"DR Congo",score:"1-1",wdl:"D"}],
+              next:[{date:"Jun 23",vs:"Uzbekistan"},{date:"Jun 27",vs:"Colombia"}] },
+            { name:"Senegal",    group:"I", pot:2, qualifyPct:67,
+              played:[{date:"Jun 16",vs:"France",score:"1-3",wdl:"L"}],
+              next:[{date:"Jun 22",vs:"Norway"},{date:"Jun 26",vs:"Iraq"}] },
+            { name:"Uzbekistan", group:"K", pot:3, qualifyPct:10,
+              played:[{date:"Jun 17",vs:"Colombia",score:"1-3",wdl:"L"}],
+              next:[{date:"Jun 23",vs:"Portugal"},{date:"Jun 27",vs:"DR Congo"}] },
+            { name:"Iraq",       group:"I", pot:4, qualifyPct:3,
+              played:[{date:"Jun 16",vs:"Norway",score:"1-4",wdl:"L"}],
+              next:[{date:"Jun 22",vs:"France"},{date:"Jun 26",vs:"Senegal"}] }
+        ]},
+        { name:"เรีย", teams:[
+            { name:"Brazil",   group:"C", pot:1, qualifyPct:99,
+              played:[{date:"Jun 13",vs:"Morocco",score:"1-1",wdl:"D"},{date:"Jun 19",vs:"Haiti",score:"3-0",wdl:"W"}],
+              next:[{date:"Jun 24",vs:"Scotland"}] },
+            { name:"Ecuador",  group:"E", pot:2, qualifyPct:83,
+              played:[{date:"Jun 14",vs:"Ivory Coast",score:"0-1",wdl:"L"}],
+              next:[{date:"Jun 20",vs:"Curaçao"},{date:"Jun 25",vs:"Germany"}] },
+            { name:"Egypt",    group:"G", pot:3, qualifyPct:87,
+              played:[{date:"Jun 15",vs:"Belgium",score:"1-1",wdl:"D"}],
+              next:[{date:"Jun 21",vs:"New Zealand"},{date:"Jun 26",vs:"Iran"}] },
+            { name:"Turkey",   group:"D", pot:4, qualifyPct:0,
+              played:[{date:"Jun 13",vs:"Australia",score:"0-2",wdl:"L"},{date:"Jun 19",vs:"Paraguay",score:"0-1",wdl:"L"}],
+              next:[] }
+        ]}
+    ]
+};
+
+// ── Stats ────────────────────────────────────────────────────────────────────
+function teamStats(t) {
+    const played = t.played || [];
+    const losses = played.filter(m => m.wdl === 'L').length;
+    const ga     = played.reduce((s, m) => s + (parseInt(m.score.split('-')[1]) || 0), 0);
+    const gp     = played.length;
+    return { losses, ga, gp, score: losses * 1000 + ga };
+}
+
+// Flatten all teams with player info
+function allTeamsRanked() {
+    const list = [];
+    SEED.players.forEach(p => {
+        p.teams.forEach(t => {
+            const stats = teamStats(t);
+            list.push({ team: t, player: p.name, ...stats });
+        });
+    });
+    list.sort((a, b) => b.score - a.score || a.team.name.localeCompare(b.team.name));
+    return list;
+}
+
+function playerRanked() {
+    const list = SEED.players.map(p => {
+        let totalL = 0, totalGA = 0;
+        let worstEntry = null, worstScore = -1;
+        p.teams.forEach(t => {
+            const s = teamStats(t);
+            totalL  += s.losses;
+            totalGA += s.ga;
+            if (s.score > worstScore) { worstScore = s.score; worstEntry = t; }
+        });
+        return { name: p.name, totalL, totalGA, score: totalL * 1000 + totalGA, worstTeam: worstEntry };
+    });
+    list.sort((a, b) => b.score - a.score);
+    return list;
+}
+
+// ── Render ───────────────────────────────────────────────────────────────────
+function render() {
+    const s   = STRINGS[lang];
+    const all = allTeamsRanked();
+    const top = all[0];
+
+    document.getElementById('h-title').textContent = '💀 ' + s.title;
+    document.getElementById('h-sub').textContent   = s.subtitle;
+    document.getElementById('h-sb').textContent    = s.backBtn;
+    document.getElementById('langBtn').textContent = lang === 'th' ? 'EN' : 'TH';
+
+    // Crown
+    const ts = top;
+    const matchRows = (ts.team.played || []).map(m => `
+        <div class="crown-match">
+            <span class="crown-match-date">${m.date}</span>
+            <span class="crown-match-vs">vs ${m.vs}</span>
+            <span class="crown-match-score">${m.score}</span>
+            <span class="crown-match-wdl wdl-${m.wdl}">${m.wdl}</span>
+        </div>`).join('');
+
+    document.getElementById('crownSection').innerHTML = `
+        <div class="section-label sl-shame">${s.crownLabel}</div>
+        <div class="shame-crown">
+            ${flagImg(ts.team.name, 90)}
+            <div class="crown-body">
+                <div class="crown-team-name">${ts.team.name}</div>
+                <div class="crown-meta">Group ${ts.team.group} · Pot ${ts.team.pot}</div>
+                <div class="crown-owned">${s.crownOwned()} <strong>${pname(ts.player)}</strong></div>
+                <div class="crown-divider"></div>
+                <div class="crown-stats">
+                    <div class="crown-stat">
+                        <div class="crown-stat-val">${ts.losses}</div>
+                        <div class="crown-stat-lbl">${s.crownLosses}</div>
+                    </div>
+                    <div class="crown-stat">
+                        <div class="crown-stat-val">${ts.ga}</div>
+                        <div class="crown-stat-lbl">${s.crownGA}</div>
+                    </div>
+                    <div class="crown-stat">
+                        <div class="crown-stat-val">${ts.gp}</div>
+                        <div class="crown-stat-lbl">${s.crownGP}</div>
+                    </div>
+                </div>
+                ${matchRows ? `<div class="crown-matches">${matchRows}</div>` : ''}
+            </div>
+        </div>`;
+
+    // Player leaderboard
+    const players = playerRanked();
+    const psRows = players.map((p, i) => {
+        const isTop = i === 0;
+        return `
+        <div class="player-shame-row${isTop ? ' ps-top' : ''}">
+            <div class="ps-rank">${i + 1}</div>
+            <div>
+                <div class="ps-name">${pname(p.name)}</div>
+                <div class="ps-worst-team">${p.worstTeam ? p.worstTeam.name : '—'}</div>
+            </div>
+            <div class="ps-val ${p.totalL > 0 ? 'pv-bad' : 'pv-ok'}">${p.totalL}</div>
+            <div class="ps-val ${p.totalGA > 0 ? 'pv-bad' : 'pv-ok'}">${p.totalGA}</div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('playerSection').innerHTML = `
+        <div class="section-label sl-neutral" style="margin-top:8px">${s.playerLabel}</div>
+        <div class="ps-header">
+            <div></div>
+            <div class="psh-left">${s.psPlayer}</div>
+            <div style="text-align:center">${s.psTotalL}</div>
+            <div style="text-align:center">${s.psTotalGA}</div>
+        </div>
+        <div class="player-shame-list">${psRows}</div>`;
+
+    // Full team ranking
+    const rankRows = all.map((entry, i) => {
+        const rank = i + 1;
+        const rankClass = rank === 1 ? 'r-1' : rank === 2 ? 'r-2' : rank === 3 ? 'r-3'
+            : entry.score === 0 ? 'r-safe' : '';
+        const rankIcon = rank === 1 ? '💀' : rank;
+        return `
+        <div class="rank-row ${rankClass}">
+            <div class="rn">${rankIcon}</div>
+            <div>${flagImg(entry.team.name, 30)}</div>
+            <div class="rteam">${entry.team.name}</div>
+            <div class="rplayer">${pname(entry.player)}</div>
+            <div class="rv ok">${entry.gp}</div>
+            <div class="rv ${entry.losses > 0 ? 'bad' : 'ok'}">${entry.losses}</div>
+            <div class="rv ${entry.ga > 0 ? 'bad' : 'ok'}">${entry.ga}</div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('rankSection').innerHTML = `
+        <div class="section-label sl-neutral">${s.rankLabel}</div>
+        <div class="rank-header">
+            <div class="rhc-left">${s.rankNum}</div>
+            <div></div>
+            <div class="rhc-left">${s.rankTeam}</div>
+            <div class="rhc-left">${s.rankPlayer}</div>
+            <div>${s.rankGP}</div>
+            <div>${s.rankL}</div>
+            <div>${s.rankGA}</div>
+        </div>
+        <div class="rank-list">${rankRows}</div>`;
+
+    document.getElementById('footer').textContent =
+        SEED.lastUpdated ? s.lastUpdated(SEED.lastUpdated) : '';
+}
+
+window.addEventListener('load', render);
+</script>
+</body>
+</html>
