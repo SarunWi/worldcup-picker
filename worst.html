@@ -89,40 +89,10 @@
         .wdl-D { background: rgba(249,168,37,.15); color: var(--yellow); }
         .wdl-L { background: rgba(229,57,53,.2);   color: var(--red); }
 
-        /* Player leaderboard */
-        .ps-header, .player-shame-row {
-            display: grid;
-            grid-template-columns: 32px 1fr 40px 40px;
-            gap: 8px;
-            align-items: center;
-            padding: 0 12px;
-        }
-        .ps-header {
-            padding-bottom: 6px;
-            font-size: .6rem; font-weight: 700; text-transform: uppercase;
-            letter-spacing: .8px; color: var(--muted); text-align: center;
-        }
-        .ps-header .psh-left { text-align: left; }
-        .player-shame-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 24px; }
-        .player-shame-row {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding-top: 10px; padding-bottom: 10px;
-        }
-        .player-shame-row.ps-top { border-color: var(--red); background: rgba(229,57,53,.06); }
-        .ps-rank { font-weight: 900; font-size: .88rem; color: var(--muted); text-align: center; }
-        .ps-top .ps-rank { color: var(--red); }
-        .ps-name { font-weight: 700; font-size: .9rem; }
-        .ps-worst-team { font-size: .68rem; color: var(--muted); margin-top: 2px; }
-        .ps-val { text-align: center; font-weight: 700; font-size: .88rem; }
-        .ps-val.pv-bad { color: var(--red); }
-        .ps-val.pv-ok  { color: var(--muted); }
-
         /* Team ranking */
         .rank-header, .rank-row {
             display: grid;
-            grid-template-columns: 36px 38px 1fr 76px 32px 32px 32px;
+            grid-template-columns: 36px 38px 1fr 76px 28px 28px 28px 28px;
             gap: 6px;
             padding: 0 10px;
             align-items: center;
@@ -164,11 +134,10 @@
             .crown-flag  { width: 72px; }
             .rank-header { display: none; }
             .rank-row {
-                /* drop GP column on mobile: 6 cols instead of 7 */
-                grid-template-columns: 28px 30px 1fr 56px 26px 26px;
+                /* drop GP column on mobile */
+                grid-template-columns: 28px 30px 1fr 52px 24px 24px 24px;
             }
             .rank-row > :nth-child(5) { display: none; }
-            .ps-header { display: none; }
         }
     </style>
 </head>
@@ -189,7 +158,6 @@
 
 <div class="main">
     <div id="crownSection"></div>
-    <div id="playerSection"></div>
     <div id="rankSection"></div>
     <div class="footer" id="footer"></div>
 </div>
@@ -223,19 +191,14 @@ const PLAYER_EN = {
 const STRINGS = {
     th: {
         title:      "Worst Pick 2026",
-        subtitle:   "ทีมที่แย่ที่สุดจะได้รับรางวัลพิเศษ — นับจากแพ้ + ประตูที่เสีย",
+        subtitle:   "ทีมที่แย่ที่สุดจะได้รับรางวัลพิเศษ — นับจากแพ้ · ประตูที่เสีย · ประตูที่ทำได้",
         backBtn:    "← หน้าสรุป",
         crownLabel: "💀 แชมป์ความอับอาย (ตอนนี้)",
         crownOwned: (name) => `ของ`,
-        crownOwnedName: (name) => name,
         crownLosses:  "ครั้งที่แพ้",
         crownGA:      "ประตูที่เสีย",
+        crownGF:      "ประตูที่ทำได้",
         crownGP:      "นัดที่แข่ง",
-        playerLabel:  "📊 สรุปรายผู้เล่น (รวมทุกทีม)",
-        psPlayer:     "ผู้เล่น",
-        psWorstTeam:  "ทีมที่แย่สุด",
-        psTotalL:     "แพ้",
-        psTotalGA:    "เสียประตู",
         rankLabel:    "🏴 อันดับความแย่ — ทุกทีม",
         rankNum:      "#",
         rankTeam:     "ทีม",
@@ -243,23 +206,19 @@ const STRINGS = {
         rankGP:       "GP",
         rankL:        "L",
         rankGA:       "GA",
+        rankGF:       "GF",
         lastUpdated:  d => `อัปเดตล่าสุด: ${d}`,
     },
     en: {
         title:      "Worst Pick 2026",
-        subtitle:   "The worst team wins the shame award — ranked by losses + goals conceded",
+        subtitle:   "The worst team wins the shame award — ranked by losses · goals conceded · goals scored",
         backBtn:    "← Scoreboard",
         crownLabel: "💀 Current Shame Champion",
         crownOwned: (name) => `Owned by`,
-        crownOwnedName: (name) => name,
         crownLosses:  "Losses",
         crownGA:      "Goals conceded",
+        crownGF:      "Goals scored",
         crownGP:      "Played",
-        playerLabel:  "📊 Player Summary (all teams combined)",
-        psPlayer:     "Player",
-        psWorstTeam:  "Worst team",
-        psTotalL:     "Total L",
-        psTotalGA:    "Total GA",
         rankLabel:    "🏴 Shame Ranking — All Teams",
         rankNum:      "#",
         rankTeam:     "Team",
@@ -267,6 +226,7 @@ const STRINGS = {
         rankGP:       "GP",
         rankL:        "L",
         rankGA:       "GA",
+        rankGF:       "GF",
         lastUpdated:  d => `Last updated: ${d}`,
     }
 };
@@ -420,36 +380,26 @@ function teamStats(t) {
     const played = t.played || [];
     const losses = played.filter(m => m.wdl === 'L').length;
     const ga     = played.reduce((s, m) => s + (parseInt(m.score.split('-')[1]) || 0), 0);
+    const gf     = played.reduce((s, m) => s + (parseInt(m.score.split('-')[0]) || 0), 0);
     const gp     = played.length;
-    return { losses, ga, gp, score: losses * 1000 + ga };
+    return { losses, ga, gf, gp };
 }
 
-// Flatten all teams with player info
+// Flatten all teams with player info, sorted worst first
+// Tiebreaker order: losses DESC → GA DESC → GF ASC (fewer goals = more shameful)
 function allTeamsRanked() {
     const list = [];
     SEED.players.forEach(p => {
         p.teams.forEach(t => {
-            const stats = teamStats(t);
-            list.push({ team: t, player: p.name, ...stats });
+            list.push({ team: t, player: p.name, ...teamStats(t) });
         });
     });
-    list.sort((a, b) => b.score - a.score || a.team.name.localeCompare(b.team.name));
-    return list;
-}
-
-function playerRanked() {
-    const list = SEED.players.map(p => {
-        let totalL = 0, totalGA = 0;
-        let worstEntry = null, worstScore = -1;
-        p.teams.forEach(t => {
-            const s = teamStats(t);
-            totalL  += s.losses;
-            totalGA += s.ga;
-            if (s.score > worstScore) { worstScore = s.score; worstEntry = t; }
-        });
-        return { name: p.name, totalL, totalGA, score: totalL * 1000 + totalGA, worstTeam: worstEntry };
+    list.sort((a, b) => {
+        if (b.losses !== a.losses) return b.losses - a.losses;
+        if (b.ga     !== a.ga)     return b.ga - a.ga;
+        if (a.gf     !== b.gf)     return a.gf - b.gf;
+        return a.team.name.localeCompare(b.team.name);
     });
-    list.sort((a, b) => b.score - a.score);
     return list;
 }
 
@@ -493,6 +443,10 @@ function render() {
                         <div class="crown-stat-lbl">${s.crownGA}</div>
                     </div>
                     <div class="crown-stat">
+                        <div class="crown-stat-val">${ts.gf}</div>
+                        <div class="crown-stat-lbl">${s.crownGF}</div>
+                    </div>
+                    <div class="crown-stat">
                         <div class="crown-stat-val">${ts.gp}</div>
                         <div class="crown-stat-lbl">${s.crownGP}</div>
                     </div>
@@ -501,37 +455,12 @@ function render() {
             </div>
         </div>`;
 
-    // Player leaderboard
-    const players = playerRanked();
-    const psRows = players.map((p, i) => {
-        const isTop = i === 0;
-        return `
-        <div class="player-shame-row${isTop ? ' ps-top' : ''}">
-            <div class="ps-rank">${i + 1}</div>
-            <div>
-                <div class="ps-name">${pname(p.name)}</div>
-                <div class="ps-worst-team">${p.worstTeam ? p.worstTeam.name : '—'}</div>
-            </div>
-            <div class="ps-val ${p.totalL > 0 ? 'pv-bad' : 'pv-ok'}">${p.totalL}</div>
-            <div class="ps-val ${p.totalGA > 0 ? 'pv-bad' : 'pv-ok'}">${p.totalGA}</div>
-        </div>`;
-    }).join('');
-
-    document.getElementById('playerSection').innerHTML = `
-        <div class="section-label sl-neutral" style="margin-top:8px">${s.playerLabel}</div>
-        <div class="ps-header">
-            <div></div>
-            <div class="psh-left">${s.psPlayer}</div>
-            <div style="text-align:center">${s.psTotalL}</div>
-            <div style="text-align:center">${s.psTotalGA}</div>
-        </div>
-        <div class="player-shame-list">${psRows}</div>`;
-
     // Full team ranking
     const rankRows = all.map((entry, i) => {
         const rank = i + 1;
+        const isSafe = entry.losses === 0 && entry.ga === 0;
         const rankClass = rank === 1 ? 'r-1' : rank === 2 ? 'r-2' : rank === 3 ? 'r-3'
-            : entry.score === 0 ? 'r-safe' : '';
+            : isSafe ? 'r-safe' : '';
         const rankIcon = rank === 1 ? '💀' : rank;
         return `
         <div class="rank-row ${rankClass}">
@@ -542,6 +471,7 @@ function render() {
             <div class="rv ok">${entry.gp}</div>
             <div class="rv ${entry.losses > 0 ? 'bad' : 'ok'}">${entry.losses}</div>
             <div class="rv ${entry.ga > 0 ? 'bad' : 'ok'}">${entry.ga}</div>
+            <div class="rv ok">${entry.gf}</div>
         </div>`;
     }).join('');
 
@@ -555,6 +485,7 @@ function render() {
             <div>${s.rankGP}</div>
             <div>${s.rankL}</div>
             <div>${s.rankGA}</div>
+            <div>${s.rankGF}</div>
         </div>
         <div class="rank-list">${rankRows}</div>`;
 
