@@ -102,7 +102,7 @@
             position: absolute; top: 4px; left: 5px;
             font-size: .55rem; color: var(--muted); font-weight: 700;
         }
-        .team-flag  { font-size: 2rem; line-height: 1; margin-bottom: 4px; }
+        .team-flag  { width: 48px; height: auto; margin-bottom: 5px; border-radius: 3px; box-shadow: 0 1px 4px rgba(0,0,0,.4); display: block; margin-left: auto; margin-right: auto; }
         .team-group { font-size: .6rem; color: var(--muted); margin-top: 2px; }
         .team-badge {
             margin-top: 6px; display: inline-block;
@@ -142,7 +142,7 @@
         .popup-header {
             display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
         }
-        .popup-flag    { font-size: 1.8rem; line-height: 1; flex-shrink: 0; }
+        .popup-flag    { width: 52px; height: auto; border-radius: 3px; box-shadow: 0 1px 4px rgba(0,0,0,.4); flex-shrink: 0; }
         .popup-title   { font-weight: 700; font-size: .95rem; }
         .popup-sub     { font-size: .63rem; color: var(--muted); margin-top: 1px; }
         .popup-close {
@@ -251,17 +251,23 @@
 <script>
 
 // ── Static maps ─────────────────────────────────────────────────────────────
-const FLAGS = {
-    "Belgium":"🇧🇪","Morocco":"🇲🇦","Qatar":"🇶🇦","DR Congo":"🇨🇩",
-    "Argentina":"🇦🇷","Japan":"🇯🇵","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","New Zealand":"🇳🇿",
-    "France":"🇫🇷","Uruguay":"🇺🇾","Tunisia":"🇹🇳","Cabo Verde":"🇨🇻",
-    "Spain":"🇪🇸","Croatia":"🇭🇷","South Africa":"🇿🇦","Jordan":"🇯🇴",
-    "Germany":"🇩🇪","Australia":"🇦🇺","Algeria":"🇩🇿","Ghana":"🇬🇭",
-    "England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Austria":"🇦🇹","Paraguay":"🇵🇾","Curaçao":"🇨🇼",
-    "Netherlands":"🇳🇱","Switzerland":"🇨🇭","Norway":"🇳🇴","Haiti":"🇭🇹",
-    "Portugal":"🇵🇹","Senegal":"🇸🇳","Uzbekistan":"🇺🇿","Iraq":"🇮🇶",
-    "Brazil":"🇧🇷","Ecuador":"🇪🇨","Egypt":"🇪🇬","Turkey":"🇹🇷"
+const FLAG_CODES = {
+    "Belgium":"be","Morocco":"ma","Qatar":"qa","DR Congo":"cd",
+    "Argentina":"ar","Japan":"jp","Scotland":"gb-sct","New Zealand":"nz",
+    "France":"fr","Uruguay":"uy","Tunisia":"tn","Cabo Verde":"cv",
+    "Spain":"es","Croatia":"hr","South Africa":"za","Jordan":"jo",
+    "Germany":"de","Australia":"au","Algeria":"dz","Ghana":"gh",
+    "England":"gb-eng","Austria":"at","Paraguay":"py","Curaçao":"cw",
+    "Netherlands":"nl","Switzerland":"ch","Norway":"no","Haiti":"ht",
+    "Portugal":"pt","Senegal":"sn","Uzbekistan":"uz","Iraq":"iq",
+    "Brazil":"br","Ecuador":"ec","Egypt":"eg","Turkey":"tr"
 };
+
+function flagImg(name, cls) {
+    const code = FLAG_CODES[name];
+    if (!code) return `<span class="${cls}" style="font-size:1.6rem">🏳️</span>`;
+    return `<img class="${cls}" src="https://flagcdn.com/w80/${code}.png" alt="${name}" loading="lazy">`;
+}
 
 const TODAY_DATE = "Jun 20";
 
@@ -460,7 +466,6 @@ function positionPopup(cardEl) {
 }
 
 function buildPopup(team) {
-    const flag   = FLAGS[team.name] || '🏳️';
     const status = getStatus(team.qualifyPct);
     const pc     = pctColor(team.qualifyPct);
 
@@ -512,7 +517,7 @@ function buildPopup(team) {
 
     return `
         <div class="popup-header">
-            <span class="popup-flag">${flag}</span>
+            ${flagImg(team.name, 'popup-flag')}
             <div>
                 <div class="popup-title">${team.name}</div>
                 <div class="popup-sub">กลุ่ม ${team.group} · Pot ${team.pot}</div>
@@ -541,7 +546,7 @@ function render() {
             return `
             <div class="team-card s-${st}" onclick="togglePopup(${pi},${ti},this)">
                 <div class="pot-lbl">P${t.pot}</div>
-                <div class="team-flag">${FLAGS[t.name] || '🏳️'}</div>
+                ${flagImg(t.name, 'team-flag')}
                 <div class="team-group">กลุ่ม ${t.group}</div>
                 <div class="team-badge">${BADGE_LABEL[st]}</div>
             </div>`;
