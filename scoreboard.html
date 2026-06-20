@@ -104,8 +104,7 @@
             position: absolute; top: 4px; left: 5px;
             font-size: .55rem; color: var(--muted); font-weight: 700;
         }
-        .team-flag  { font-size: 1.6rem; line-height: 1; margin-bottom: 4px; }
-        .team-name  { font-size: .72rem; font-weight: 700; line-height: 1.25; }
+        .team-flag  { font-size: 2rem; line-height: 1; margin-bottom: 4px; }
         .team-group { font-size: .6rem; color: var(--muted); margin-top: 2px; }
         .team-badge {
             margin-top: 6px; display: inline-block;
@@ -544,7 +543,10 @@ const docRef = db.collection('scoreboard').doc('main');
 
 window.addEventListener('load', async () => {
     const snap = await docRef.get();
-    if (!snap.exists) await docRef.set(SEED);
+    // Re-seed whenever lastUpdated changes (stale or missing doc)
+    if (!snap.exists || snap.data().lastUpdated !== SEED.lastUpdated) {
+        await docRef.set(SEED);
+    }
 
     docRef.onSnapshot(snap => {
         if (!snap.exists) return;
@@ -567,7 +569,6 @@ function render() {
             <div class="team-card s-${st}" onclick="togglePopup(${pi},${ti},this)">
                 <div class="pot-lbl">P${t.pot}</div>
                 <div class="team-flag">${FLAGS[t.name] || '🏳️'}</div>
-                <div class="team-name">${t.name}</div>
                 <div class="team-group">กลุ่ม ${t.group}</div>
                 <div class="team-badge">${BADGE_LABEL[st]}</div>
             </div>`;
