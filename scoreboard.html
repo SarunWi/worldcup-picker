@@ -84,13 +84,15 @@
         .team-card {
             position: relative;
             border-radius: 8px;
-            padding: 8px 6px 7px;
+            padding: 8px;
             border: 1px solid var(--border);
             background: var(--bg);
             cursor: pointer;
             transition: all .15s;
-            text-align: center;
             user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .team-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,.3); }
         .team-card:active { transform: translateY(0); }
@@ -102,16 +104,48 @@
             position: absolute; top: 4px; left: 5px;
             font-size: .55rem; color: var(--muted); font-weight: 700;
         }
-        .team-flag  { width: 48px; height: auto; margin-bottom: 5px; border-radius: 3px; box-shadow: 0 1px 4px rgba(0,0,0,.4); display: block; margin-left: auto; margin-right: auto; }
-        .team-group { font-size: .6rem; color: var(--muted); margin-top: 2px; }
+
+        /* ── Card left (flag + group + badge) ───────────────── */
+        .card-left {
+            display: flex; flex-direction: column; align-items: center;
+            flex-shrink: 0; width: 54px; text-align: center;
+        }
+        .team-flag  { width: 44px; height: auto; margin-bottom: 4px; border-radius: 3px; box-shadow: 0 1px 4px rgba(0,0,0,.4); display: block; }
+        .team-group { font-size: .58rem; color: var(--muted); margin-top: 1px; }
         .team-badge {
-            margin-top: 6px; display: inline-block;
-            padding: 2px 7px; border-radius: 10px;
-            font-size: .6rem; font-weight: 700; letter-spacing: .3px;
+            margin-top: 5px; display: inline-block;
+            padding: 2px 5px; border-radius: 10px;
+            font-size: .55rem; font-weight: 700; letter-spacing: .3px; white-space: nowrap;
         }
         .s-qualified .team-badge { background: rgba(76,175,80,.18); color: var(--green); }
         .s-alive     .team-badge { background: rgba(249,168,37,.15); color: var(--yellow); }
         .s-eliminated .team-badge { background: rgba(60,60,60,.3); color: #666; }
+
+        /* ── Card right (matches + %) ────────────────────────── */
+        .card-right { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+        .card-match {
+            display: flex; align-items: center; gap: 3px;
+            font-size: .6rem; white-space: nowrap; overflow: hidden;
+        }
+        .card-next { color: var(--muted); }
+        .card-date { font-size: .55rem; color: var(--muted); min-width: 34px; flex-shrink: 0; }
+        .card-vs   { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+        .card-score { font-weight: 700; flex-shrink: 0; }
+        .card-wdl  {
+            font-size: .52rem; font-weight: 900; padding: 1px 3px;
+            border-radius: 3px; flex-shrink: 0;
+        }
+        .card-pct {
+            display: flex; align-items: center; gap: 5px;
+            margin-top: 4px; padding-top: 4px;
+            border-top: 1px solid rgba(255,255,255,.06);
+        }
+        .card-pct-bar-wrap {
+            flex: 1; height: 4px; background: rgba(255,255,255,.07);
+            border-radius: 2px; overflow: hidden;
+        }
+        .card-pct-bar  { height: 100%; border-radius: 2px; }
+        .card-pct-num  { font-size: .65rem; font-weight: 800; min-width: 30px; text-align: right; flex-shrink: 0; }
 
         /* ── Score cell ──────────────────────────────────────── */
         .score-cell {
@@ -198,6 +232,7 @@
             .player-name { justify-content: flex-start; font-size: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
             .score-cell { flex-direction: row; justify-content: flex-end; border-top: 1px solid var(--border); padding-top: 8px; gap: 8px; }
             .score-big { font-size: 1.5rem; }
+            .card-date { display: none; } /* too narrow on mobile */
 
             /* Mobile popup: bottom sheet */
             .popup {
@@ -542,13 +577,42 @@ function render() {
         const e = p.teams.filter(t => getStatus(t.qualifyPct) === 'eliminated').length;
 
         const cards = p.teams.map((t, ti) => {
-            const st = getStatus(t.qualifyPct);
+            const st  = getStatus(t.qualifyPct);
+            const pc  = pctColor(t.qualifyPct);
+
+            const matchRows = [
+                ...(t.played || []).map(m => `
+                    <div class="card-match">
+                        <span class="card-date">${m.date}</span>
+                        <span class="card-vs">vs ${m.vs}</span>
+                        <span class="card-score">${m.score}</span>
+                        <span class="card-wdl wdl-${m.wdl}">${m.wdl}</span>
+                    </div>`),
+                ...(t.next || []).map(m => `
+                    <div class="card-match card-next">
+                        <span class="card-date">${m.date}</span>
+                        <span class="card-vs">vs ${m.vs}</span>
+                        ${m.date === TODAY_DATE ? '<span class="today-badge">TODAY</span>' : ''}
+                    </div>`)
+            ].join('');
+
             return `
             <div class="team-card s-${st}" onclick="togglePopup(${pi},${ti},this)">
                 <div class="pot-lbl">P${t.pot}</div>
-                ${flagImg(t.name, 'team-flag')}
-                <div class="team-group">กลุ่ม ${t.group}</div>
-                <div class="team-badge">${BADGE_LABEL[st]}</div>
+                <div class="card-left">
+                    ${flagImg(t.name, 'team-flag')}
+                    <div class="team-group">กลุ่ม ${t.group}</div>
+                    <div class="team-badge">${BADGE_LABEL[st]}</div>
+                </div>
+                <div class="card-right">
+                    ${matchRows}
+                    <div class="card-pct">
+                        <div class="card-pct-bar-wrap">
+                            <div class="card-pct-bar" style="width:${t.qualifyPct}%;background:${pc}"></div>
+                        </div>
+                        <span class="card-pct-num" style="color:${pc}">${t.qualifyPct}%</span>
+                    </div>
+                </div>
             </div>`;
         }).join('');
 
