@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เชียร์บอลโลก 2026</title>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg:     #0d1b2a;
+            --card:   #162231;
+            --border: #243447;
+            --green:  #4caf50;
+            --gold:   #ffd700;
+            --text:   #dce8f0;
+            --muted:  #5a7080;
+            --yellow: #f9a825;
+            --red:    #e53935;
+        }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+        /* ── Header ─────────────────────────────────────────────── */
+        header {
+            background: linear-gradient(135deg, #071810, #0f2a14);
+            border-bottom: 2px solid var(--green);
+            padding: 14px 20px;
+        }
+        .header-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+        }
+        header h1 { font-size: 1.4rem; font-weight: 700; }
+        .header-sub { color: var(--muted); font-size: .78rem; margin-top: 3px; }
+        .back-btn {
+            background: #1a2e3e; border: 1px solid var(--border);
+            color: var(--text); padding: 7px 14px; border-radius: 7px;
+            text-decoration: none; font-size: .82rem;
+        }
+        .back-btn:hover { border-color: var(--green); }
+
+        /* ── Main ────────────────────────────────────────────────── */
+        .main { max-width: 1200px; margin: 0 auto; padding: 16px; }
+
+        .legend {
+            display: flex; align-items: center; gap: 16px; margin-bottom: 12px;
+            font-size: .75rem; color: var(--muted); flex-wrap: wrap;
+        }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .ldot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+        .ldot-q { background: var(--green); }
+        .ldot-a { background: var(--yellow); }
+        .ldot-e { background: #444; }
+        .legend-hint { margin-left: auto; font-size: .72rem; }
+
+        /* ── Board ───────────────────────────────────────────────── */
+        .board-header {
+            display: grid;
+            grid-template-columns: 88px repeat(4, 1fr) 82px;
+            gap: 6px; padding: 0 6px 4px;
+            font-size: .65rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--muted); text-align: center;
+        }
+        .board-header .bh-left { text-align: left; }
+
+        .board { display: flex; flex-direction: column; gap: 6px; }
+
+        /* ── Player row ──────────────────────────────────────────── */
+        .player-row {
+            display: grid;
+            grid-template-columns: 88px repeat(4, 1fr) 82px;
+            gap: 6px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 8px;
+            align-items: stretch;
+            transition: border-color .15s;
+        }
+        .player-row:hover { border-color: #2d4a60; }
+
+        .player-name {
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: .92rem; text-align: center;
+            padding: 4px 2px;
+        }
+
+        /* teams-wrap: display:contents flattens it into the grid on desktop */
+        .teams-wrap { display: contents; }
+
+        /* ── Team card ───────────────────────────────────────────── */
+        .team-card {
+            position: relative;
+            border-radius: 8px;
+            padding: 8px 6px 7px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            cursor: pointer;
+            transition: all .15s;
+            text-align: center;
+            user-select: none;
+        }
+        .team-card:hover { transform: translateY(-2px); }
+        .team-card:active { transform: translateY(0); }
+
+        .team-card.s-qualified { border-color: var(--green); background: rgba(76,175,80,.07); }
+        .team-card.s-alive     { border-color: rgba(249,168,37,.45); }
+        .team-card.s-eliminated { opacity: .38; filter: grayscale(.6); }
+
+        .pot-lbl {
+            position: absolute; top: 4px; left: 5px;
+            font-size: .55rem; color: var(--muted); font-weight: 700;
+        }
+        .team-flag { font-size: 1.6rem; line-height: 1; margin-bottom: 4px; }
+        .team-name { font-size: .72rem; font-weight: 700; line-height: 1.25; }
+        .team-group { font-size: .6rem; color: var(--muted); margin-top: 2px; }
+        .team-badge {
+            margin-top: 6px;
+            display: inline-block; padding: 2px 7px; border-radius: 10px;
+            font-size: .6rem; font-weight: 700; letter-spacing: .3px;
+        }
+        .s-qualified .team-badge { background: rgba(76,175,80,.18); color: var(--green); }
+        .s-alive     .team-badge { background: rgba(249,168,37,.15); color: var(--yellow); }
+        .s-eliminated .team-badge { background: rgba(60,60,60,.3); color: #666; }
+
+        /* ── Score cell ──────────────────────────────────────────── */
+        .score-cell { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+        .score-big { font-size: 2.2rem; font-weight: 900; color: var(--gold); line-height: 1; }
+        .score-sub { font-size: .6rem; color: var(--muted); }
+        .score-detail { font-size: .62rem; color: var(--muted); margin-top: 3px; }
+
+        /* ── Footer ──────────────────────────────────────────────── */
+        .footer { text-align: center; color: var(--muted); font-size: .73rem; margin-top: 18px; padding-bottom: 20px; }
+
+        /* ── Mobile ──────────────────────────────────────────────── */
+        @media (max-width: 780px) {
+            .board-header { display: none; }
+            .player-row {
+                display: flex; flex-direction: column; gap: 8px;
+            }
+            .teams-wrap {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
+            }
+            .player-name {
+                justify-content: flex-start;
+                font-size: 1rem;
+                border-bottom: 1px solid var(--border);
+                padding-bottom: 8px;
+            }
+            .score-cell {
+                flex-direction: row; justify-content: flex-end;
+                border-top: 1px solid var(--border); padding-top: 8px; gap: 8px;
+            }
+            .score-big { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-inner">
+        <div>
+            <h1>🏆 เชียร์บอลโลก 2026</h1>
+            <div class="header-sub">สรุปสถานะทีม — เข้ารอบ 32 ทีม</div>
+        </div>
+        <a class="back-btn" href="index.html">← กลับหน้าจับฉลาก</a>
+    </div>
+</header>
+
+<div class="main">
+    <div class="legend">
+        <span class="legend-item"><span class="ldot ldot-q"></span>เข้ารอบ 32 ทีมแล้ว</span>
+        <span class="legend-item"><span class="ldot ldot-a"></span>ยังลุ้น</span>
+        <span class="legend-item"><span class="ldot ldot-e"></span>ตกรอบ</span>
+        <span class="legend-hint">คลิกที่ทีมเพื่ออัปเดตสถานะ</span>
+    </div>
+
+    <div class="board-header">
+        <div class="bh-left">ผู้เล่น</div>
+        <div>ทีม 1 (Pot 1)</div>
+        <div>ทีม 2 (Pot 2)</div>
+        <div>ทีม 3 (Pot 3)</div>
+        <div>ทีม 4 (Pot 4)</div>
+        <div>เข้ารอบ</div>
+    </div>
+
+    <div class="board" id="board">
+        <div style="text-align:center;color:var(--muted);padding:48px">กำลังโหลด…</div>
+    </div>
+
+    <div class="footer" id="footer"></div>
+</div>
+
+<script>
+// ── Firebase ────────────────────────────────────────────────────────────────
+const FIREBASE_CONFIG = {
+    apiKey:            "AIzaSyBJnZmPFzNa6JICMwnpmJJlqH9ksoyQPpE",
+    authDomain:        "worldcup-picker.firebaseapp.com",
+    projectId:         "worldcup-picker",
+    storageBucket:     "worldcup-picker.firebasestorage.app",
+    messagingSenderId: "510450704688",
+    appId:             "1:510450704688:web:6dac8dc586bad5f553a8f5"
+};
+
+// ── Static maps ─────────────────────────────────────────────────────────────
+const FLAGS = {
+    "Belgium":"🇧🇪","Morocco":"🇲🇦","Qatar":"🇶🇦","DR Congo":"🇨🇩",
+    "Argentina":"🇦🇷","Japan":"🇯🇵","Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","New Zealand":"🇳🇿",
+    "France":"🇫🇷","Uruguay":"🇺🇾","Tunisia":"🇹🇳","Cabo Verde":"🇨🇻",
+    "Spain":"🇪🇸","Croatia":"🇭🇷","South Africa":"🇿🇦","Jordan":"🇯🇴",
+    "Germany":"🇩🇪","Australia":"🇦🇺","Algeria":"🇩🇿","Ghana":"🇬🇭",
+    "England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Austria":"🇦🇹","Paraguay":"🇵🇾","Curaçao":"🇨🇼",
+    "Netherlands":"🇳🇱","Switzerland":"🇨🇭","Norway":"🇳🇴","Haiti":"🇭🇹",
+    "Portugal":"🇵🇹","Senegal":"🇸🇳","Uzbekistan":"🇺🇿","Iraq":"🇮🇶",
+    "Brazil":"🇧🇷","Ecuador":"🇪🇨","Egypt":"🇪🇬","Turkey":"🇹🇷"
+};
+
+const BADGE = {
+    qualified: "✅ เข้ารอบ",
+    alive:     "🟡 ยังลุ้น",
+    eliminated:"❌ ตกรอบ"
+};
+
+const CYCLE = { alive: "qualified", qualified: "eliminated", eliminated: "alive" };
+
+// ── Seed data (pre-loaded from results as of 2026-06-20) ────────────────────
+const SEED = {
+    lastUpdated: "20 มิ.ย. 2026",
+    players: [
+        { name: "ก้อง", teams: [
+            { name: "Belgium",     group: "G", pot: 1, status: "alive" },
+            { name: "Morocco",     group: "C", pot: 2, status: "alive" },
+            { name: "Qatar",       group: "B", pot: 3, status: "alive" },
+            { name: "DR Congo",    group: "K", pot: 4, status: "alive" }
+        ]},
+        { name: "แว่น", teams: [
+            { name: "Argentina",   group: "J", pot: 1, status: "alive" },
+            { name: "Japan",       group: "F", pot: 2, status: "alive" },
+            { name: "Scotland",    group: "C", pot: 3, status: "alive" },
+            { name: "New Zealand", group: "G", pot: 4, status: "alive" }
+        ]},
+        { name: "มิว", teams: [
+            { name: "France",      group: "I", pot: 1, status: "alive" },
+            { name: "Uruguay",     group: "H", pot: 2, status: "alive" },
+            { name: "Tunisia",     group: "F", pot: 3, status: "alive" },
+            { name: "Cabo Verde",  group: "H", pot: 4, status: "alive" }
+        ]},
+        { name: "นุ", teams: [
+            { name: "Spain",        group: "H", pot: 1, status: "alive" },
+            { name: "Croatia",      group: "L", pot: 2, status: "alive" },
+            { name: "South Africa", group: "A", pot: 3, status: "alive" },
+            { name: "Jordan",       group: "J", pot: 4, status: "alive" }
+        ]},
+        { name: "ตือ", teams: [
+            { name: "Germany",     group: "E", pot: 1, status: "alive" },
+            { name: "Australia",   group: "D", pot: 2, status: "alive" },
+            { name: "Algeria",     group: "J", pot: 3, status: "alive" },
+            { name: "Ghana",       group: "L", pot: 4, status: "alive" }
+        ]},
+        { name: "พิม", teams: [
+            { name: "England",     group: "L", pot: 1, status: "alive" },
+            { name: "Austria",     group: "J", pot: 2, status: "alive" },
+            { name: "Paraguay",    group: "D", pot: 3, status: "alive" },
+            { name: "Curaçao",    group: "E", pot: 4, status: "alive" }
+        ]},
+        { name: "บลู", teams: [
+            { name: "Netherlands", group: "F", pot: 1, status: "alive" },
+            { name: "Switzerland", group: "B", pot: 2, status: "qualified" },
+            { name: "Norway",      group: "I", pot: 3, status: "alive" },
+            { name: "Haiti",       group: "C", pot: 4, status: "eliminated" }
+        ]},
+        { name: "อาม", teams: [
+            { name: "Portugal",    group: "K", pot: 1, status: "alive" },
+            { name: "Senegal",     group: "I", pot: 2, status: "alive" },
+            { name: "Uzbekistan",  group: "K", pot: 3, status: "alive" },
+            { name: "Iraq",        group: "I", pot: 4, status: "alive" }
+        ]},
+        { name: "เรีย", teams: [
+            { name: "Brazil",      group: "C", pot: 1, status: "alive" },
+            { name: "Ecuador",     group: "E", pot: 2, status: "alive" },
+            { name: "Egypt",       group: "G", pot: 3, status: "alive" },
+            { name: "Turkey",      group: "D", pot: 4, status: "eliminated" }
+        ]}
+    ]
+};
+
+// ── App ─────────────────────────────────────────────────────────────────────
+let db, data;
+firebase.initializeApp(FIREBASE_CONFIG);
+db = firebase.firestore();
+const docRef = db.collection('scoreboard').doc('main');
+
+window.addEventListener('load', async () => {
+    const snap = await docRef.get();
+    if (!snap.exists) await docRef.set(SEED);
+
+    docRef.onSnapshot(snap => {
+        if (!snap.exists) return;
+        data = snap.data();
+        render();
+    });
+});
+
+async function toggleStatus(pi, ti) {
+    if (!data) return;
+    const team = data.players[pi].teams[ti];
+    team.status = CYCLE[team.status];
+    data.lastUpdated = new Date().toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric', calendar: 'gregory' });
+    render();
+    await docRef.set(data);
+}
+
+function render() {
+    const board = document.getElementById('board');
+
+    board.innerHTML = data.players.map((p, pi) => {
+        const q = p.teams.filter(t => t.status === 'qualified').length;
+        const a = p.teams.filter(t => t.status === 'alive').length;
+        const e = p.teams.filter(t => t.status === 'eliminated').length;
+
+        const cards = p.teams.map((t, ti) => `
+            <div class="team-card s-${t.status}" onclick="toggleStatus(${pi},${ti})" title="คลิกเพื่อเปลี่ยนสถานะ">
+                <div class="pot-lbl">P${t.pot}</div>
+                <div class="team-flag">${FLAGS[t.name] || '🏳️'}</div>
+                <div class="team-name">${t.name}</div>
+                <div class="team-group">กลุ่ม ${t.group}</div>
+                <div class="team-badge">${BADGE[t.status]}</div>
+            </div>`).join('');
+
+        return `
+            <div class="player-row">
+                <div class="player-name">${p.name}</div>
+                <div class="teams-wrap">${cards}</div>
+                <div class="score-cell">
+                    <div class="score-big">${q}<span style="font-size:1rem;color:var(--muted)">/4</span></div>
+                    <div class="score-sub">เข้ารอบ</div>
+                    <div class="score-detail">${a} ลุ้น · ${e} ตก</div>
+                </div>
+            </div>`;
+    }).join('');
+
+    const footer = document.getElementById('footer');
+    footer.textContent = data.lastUpdated ? `อัปเดตล่าสุด: ${data.lastUpdated}` : '';
+}
+</script>
+</body>
+</html>
