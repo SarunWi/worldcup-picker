@@ -43,6 +43,9 @@ A three-page web app for a friend group to randomly pick World Cup 2026 teams an
 - **Status badge**: auto-derived from `qualifyPct` — 100 = qualified, 0 = eliminated, else alive
 - **Flag images**: from `https://flagcdn.com/w80/{code}.png`; Scotland = `gb-sct`, England = `gb-eng`
 - **Navigation**: header links to Picker, Worst Pick page, and lang toggle
+- **Team name filter**: live text search above the board — hides non-matching cards and collapses empty player rows
+- **Group filter chips**: A–L letter buttons below the text filter — click to show only teams in that group; combines with text filter (AND logic); click again to deselect; ✕ clears both
+- **Non-picked teams**: when filtering by group, a "Group X — Other teams" section appears below the board showing cards for teams not picked by any player. All 48 WC2026 teams are in the data — 36 in `SEED.players`, 12 non-picked in `SEED.extras`
 
 ## Worst Pick page (`worst.html`)
 - **Shame crown**: big featured card for the current worst team (the #1 shame leader)
@@ -58,15 +61,33 @@ When asked to update, Claude should:
 1. Web search current match results and standings for all 36 teams above
 2. Web fetch FoxSports odds page for updated qualify % (convert American odds to implied probability)
 3. Web fetch ESPN fixtures page for updated results and upcoming schedule
-4. Update `SEED` data in `scoreboard.html` with new `played`, `next`, and `qualifyPct` values
-5. Update `lastUpdated` string
+4. Update `SEED` data in **both `scoreboard.html` and `worst.html`** with new `played`, `next`, and `qualifyPct` values
+5. Update `lastUpdated` string in both files
 6. Commit and push — GitHub Pages deploys in ~1 min
 
 **Key sources:**
 - Results/schedule: `https://www.espn.com/soccer/story/_/id/48939282/2026-fifa-world-cup-fixtures-results-match-schedule-group-stage-knockout-rounds-bracket`
 - Qualify odds: `https://www.foxsports.com/stories/soccer/2026-world-cup-odds-teams-favored-advance-knockout-stage`
 
-## Scoreboard data structure (per team)
+## Auto-update schedule (group stage)
+CronCreate jobs were set up on 2026-06-21 to auto-update after each match day. **These are session-only — they die if the Claude Code session is closed.** If the session closes, recreate them by asking: *"Please recreate the 7 scoreboard auto-update cron jobs for the World Cup 2026 group stage."*
+
+| Fire time (Thailand, UTC+7) | Covers |
+|-----------------------------|--------|
+| Jun 22, 2:07 AM | Jun 21 TH matches (NED/SWE, GER/CIV, ECU/CUW, TUN/JPN, ESP/KSA) |
+| Jun 22, 11:07 AM | Jun 21 ET late matches (BEL/IRN, URU/CPV, NZL/EGY) |
+| Jun 23, 1:13 PM | Jun 22 ET matches |
+| Jun 24, 12:17 PM | Jun 23 ET matches |
+| Jun 25, 11:07 AM | Jun 24 ET matches |
+| Jun 26, 12:13 PM | Jun 25 ET matches |
+| Jun 27, 1:17 PM | Jun 26 ET matches |
+| Jun 28, 12:07 PM | Jun 27 ET matches (group stage final day) |
+
+Timezone note: Thailand = ET + 11 hours. ESPN fixture times are in ET.
+
+## Scoreboard data structure
+
+**Picked teams** live in `SEED.players[].teams[]` (36 teams, one per player):
 ```js
 {
   name: "Belgium", group: "G", pot: 1,
@@ -80,4 +101,15 @@ When asked to update, Claude should:
   ]
 }
 ```
+
+**Non-picked teams** live in `SEED.extras[]` (12 teams — same shape but no `pot` field):
+```js
+{ name: "Sweden", group: "F", qualifyPct: 55,
+  played: [...], next: [...] }
+```
+
+Non-picked teams: Mexico, South Korea, Czechia (A) · Canada, Bosnia (B) · USA (D) · Ivory Coast (E) · Sweden (F) · Iran (G) · Saudi Arabia (H) · Colombia (K) · Panama (L)
+
 `qualifyPct: 100` = confirmed qualified, `qualifyPct: 0` = eliminated. Status badge is auto-derived from this field — no manual status clicks needed.
+
+When updating match results, update `SEED.extras` in `scoreboard.html` too (in addition to `SEED.players` in both files). `worst.html` only uses `SEED.players` — extras do not affect it.
