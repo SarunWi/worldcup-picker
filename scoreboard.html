@@ -541,17 +541,27 @@ firebase.initializeApp(FIREBASE_CONFIG);
 db = firebase.firestore();
 const docRef = db.collection('scoreboard').doc('main');
 
-window.addEventListener('load', async () => {
-    const snap = await docRef.get();
-    // Re-seed whenever lastUpdated changes (stale or missing doc)
-    if (!snap.exists || snap.data().lastUpdated !== SEED.lastUpdated) {
-        await docRef.set(SEED);
-    }
+window.addEventListener('load', () => {
+    // Always render SEED immediately — don't wait on Firestore
+    data = SEED;
+    render();
 
+    // Try to push SEED to Firestore so all devices stay in sync.
+    // Wrapped in try/catch so a security-rules rejection doesn't break anything.
+    docRef.get().then(snap => {
+        if (!snap.exists || snap.data().lastUpdated !== SEED.lastUpdated) {
+            return docRef.set(SEED);
+        }
+    }).catch(() => {});
+
+    // Real-time listener: only apply Firestore data if it matches current structure
     docRef.onSnapshot(snap => {
         if (!snap.exists) return;
-        data = snap.data();
-        render();
+        const d = snap.data();
+        if (d.lastUpdated === SEED.lastUpdated) {
+            data = d;
+            render();
+        }
     });
 });
 
