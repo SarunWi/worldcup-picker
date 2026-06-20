@@ -12,6 +12,7 @@ A three-page web app for a friend group to randomly pick World Cup 2026 teams an
 - `index.html` — Spinning wheel team picker
 - `scoreboard.html` — Live scoreboard tracking each player's teams
 - `worst.html` — Shame ranking: worst team among all picks wins a special award
+- `teams.js` — **Single source of truth for all match data** (`teamByName` + `LAST_UPDATED`); loaded by both scoreboard and worst pages
 
 ## Firebase
 - Project: `worldcup-picker` (Firestore, free tier)
@@ -45,7 +46,7 @@ A three-page web app for a friend group to randomly pick World Cup 2026 teams an
 - **Navigation**: header links to Picker, Worst Pick page, and lang toggle
 - **Team name filter**: live text search above the board — hides non-matching cards and collapses empty player rows
 - **Group filter chips**: A–L letter buttons below the text filter — click to show only teams in that group; combines with text filter (AND logic); click again to deselect; ✕ clears both
-- **Non-picked teams**: when filtering by group, a "Group X — Other teams" section appears below the board showing cards for teams not picked by any player. All 48 WC2026 teams are in the data — 36 in `SEED.players`, 12 non-picked in `SEED.extras`
+- **Non-picked teams**: when filtering by group, a "Group X — Other teams" section appears below the board showing cards for teams not picked by any player. All 48 WC2026 teams are in `teamByName` in `teams.js` — 36 picked (referenced from `SEED.players`), 12 non-picked referenced from `SEED.extras`
 
 ## Worst Pick page (`worst.html`)
 - **Shame crown**: big featured card for the current worst team (the #1 shame leader)
@@ -54,16 +55,15 @@ A three-page web app for a friend group to randomly pick World Cup 2026 teams an
 - **Columns**: GP, L (red if > 0), GA (red if > 0), GF
 - **Highlighting**: #1 gets 💀 icon + red border glow; ranks 2–3 get fading red border; teams with 0 losses + 0 GA are faded
 - **Language toggle**: shares the same `wc-lang` localStorage key as scoreboard
-- **Updating**: `worst.html` copies the same `SEED` data block as `scoreboard.html` — keep both in sync when updating match results
+- **Updating**: match data lives in `teams.js` only — `worst.html` and `scoreboard.html` both load it via `<script src="teams.js">`
 
 ## Updating the scoreboard
 When asked to update, Claude should:
 1. Web search current match results and standings for all 36 teams above
 2. Web fetch FoxSports odds page for updated qualify % (convert American odds to implied probability)
 3. Web fetch ESPN fixtures page for updated results and upcoming schedule
-4. Update `SEED` data in **both `scoreboard.html` and `worst.html`** with new `played`, `next`, and `qualifyPct` values
-5. Update `lastUpdated` string in both files
-6. Commit and push — GitHub Pages deploys in ~1 min
+4. Update **`teams.js` only** — edit `qualifyPct`, `played`, `next` for each team in `teamByName`, and update `LAST_UPDATED`
+5. Commit and push — GitHub Pages deploys in ~1 min
 
 **Key sources:**
 - Results/schedule: `https://www.espn.com/soccer/story/_/id/48939282/2026-fifa-world-cup-fixtures-results-match-schedule-group-stage-knockout-rounds-bracket`
@@ -85,31 +85,49 @@ CronCreate jobs were set up on 2026-06-21 to auto-update after each match day. *
 
 Timezone note: Thailand = ET + 11 hours. ESPN fixture times are in ET.
 
-## Scoreboard data structure
+## Data structure
 
-**Picked teams** live in `SEED.players[].teams[]` (36 teams, one per player):
+### `teams.js` — edit this file to update scores
 ```js
-{
-  name: "Belgium", group: "G", pot: 1,
-  qualifyPct: 96,          // % chance to make Round of 32 (from FoxSports odds)
-  played: [
-    { date: "Jun 15", vs: "Egypt", score: "1-1", wdl: "D" }
+const LAST_UPDATED = "21 มิ.ย. 2026";
+
+const teamByName = {
+  "Belgium": { name:"Belgium", group:"G", pot:1,
+    qualifyPct: 96,        // % chance to advance (from FoxSports odds)
+    played: [{ date:"Jun 15", vs:"Egypt", score:"1-1", wdl:"D" }],
+    next:   [{ date:"Jun 21", vs:"Iran" }, { date:"Jun 26", vs:"New Zealand" }]
+  },
+  // ... all 48 teams
+};
+```
+- All 48 teams are in `teamByName` (36 picked + 12 non-picked extras)
+- Non-picked teams have no `pot` field
+- `qualifyPct: 100` = qualified, `qualifyPct: 0` = eliminated
+- Status badge is auto-derived — no manual flag needed
+
+### `SEED` in each HTML file — never needs to change
+**`scoreboard.html`** has player assignments + extras list:
+```js
+const SEED = {
+  players: [
+    { name:"ก้อง", teams:["Belgium","Morocco","Qatar","DR Congo"] },
+    // ...
   ],
-  next: [
-    { date: "Jun 21", vs: "Iran" },
-    { date: "Jun 26", vs: "New Zealand" }
-  ]
-}
+  extras: ["Mexico","South Korea","Czechia","Canada","Bosnia","USA",
+           "Ivory Coast","Sweden","Iran","Saudi Arabia","Colombia","Panama"],
+};
 ```
 
-**Non-picked teams** live in `SEED.extras[]` (12 teams — same shape but no `pot` field):
+**`worst.html`** has player assignments only (no extras):
 ```js
-{ name: "Sweden", group: "F", qualifyPct: 55,
-  played: [...], next: [...] }
+const SEED = {
+  players: [
+    { name:"ก้อง", teams:["Belgium","Morocco","Qatar","DR Congo"] },
+    // ...
+  ],
+};
 ```
+
+Both files resolve team names via `teamByName[name]` from `teams.js`.
 
 Non-picked teams: Mexico, South Korea, Czechia (A) · Canada, Bosnia (B) · USA (D) · Ivory Coast (E) · Sweden (F) · Iran (G) · Saudi Arabia (H) · Colombia (K) · Panama (L)
-
-`qualifyPct: 100` = confirmed qualified, `qualifyPct: 0` = eliminated. Status badge is auto-derived from this field — no manual status clicks needed.
-
-When updating match results, update `SEED.extras` in `scoreboard.html` too (in addition to `SEED.players` in both files). `worst.html` only uses `SEED.players` — extras do not affect it.
