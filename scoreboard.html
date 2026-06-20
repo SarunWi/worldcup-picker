@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เชียร์บอลโลก 2026</title>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
@@ -251,15 +249,6 @@
 </div>
 
 <script>
-// ── Firebase ────────────────────────────────────────────────────────────────
-const FIREBASE_CONFIG = {
-    apiKey:            "AIzaSyBJnZmPFzNa6JICMwnpmJJlqH9ksoyQPpE",
-    authDomain:        "worldcup-picker.firebaseapp.com",
-    projectId:         "worldcup-picker",
-    storageBucket:     "worldcup-picker.firebasestorage.app",
-    messagingSenderId: "510450704688",
-    appId:             "1:510450704688:web:6dac8dc586bad5f553a8f5"
-};
 
 // ── Static maps ─────────────────────────────────────────────────────────────
 const FLAGS = {
@@ -535,35 +524,9 @@ function buildPopup(team) {
         ${pctHtml}`;
 }
 
-// ── Firebase / render ────────────────────────────────────────────────────────
-let db, data;
-firebase.initializeApp(FIREBASE_CONFIG);
-db = firebase.firestore();
-const docRef = db.collection('scoreboard').doc('main');
-
-window.addEventListener('load', () => {
-    // Always render SEED immediately — don't wait on Firestore
-    data = SEED;
-    render();
-
-    // Try to push SEED to Firestore so all devices stay in sync.
-    // Wrapped in try/catch so a security-rules rejection doesn't break anything.
-    docRef.get().then(snap => {
-        if (!snap.exists || snap.data().lastUpdated !== SEED.lastUpdated) {
-            return docRef.set(SEED);
-        }
-    }).catch(() => {});
-
-    // Real-time listener: only apply Firestore data if it matches current structure
-    docRef.onSnapshot(snap => {
-        if (!snap.exists) return;
-        const d = snap.data();
-        if (d.lastUpdated === SEED.lastUpdated) {
-            data = d;
-            render();
-        }
-    });
-});
+// ── Render ───────────────────────────────────────────────────────────────────
+const data = SEED;
+window.addEventListener('load', render);
 
 function render() {
     const board = document.getElementById('board');
@@ -596,8 +559,8 @@ function render() {
         </div>`;
     }).join('');
 
-    const footer = document.getElementById('footer');
-    footer.textContent = data.lastUpdated ? `อัปเดตล่าสุด: ${data.lastUpdated} · ข้อมูลโอกาส: FoxSports` : '';
+    document.getElementById('footer').textContent =
+        data.lastUpdated ? `อัปเดตล่าสุด: ${data.lastUpdated} · ข้อมูลโอกาส: FoxSports` : '';
 }
 </script>
 </body>
