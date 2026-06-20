@@ -224,6 +224,14 @@
             margin-top: 18px; padding-bottom: 20px;
         }
 
+        /* ── Lang toggle ─────────────────────────────────────── */
+        .lang-btn {
+            background: #1a2e3e; border: 1px solid var(--border);
+            color: var(--text); padding: 7px 14px; border-radius: 7px;
+            font-size: .82rem; cursor: pointer; font-weight: 700; letter-spacing: 1px;
+        }
+        .lang-btn:hover { border-color: var(--green); }
+
         /* ── Mobile ──────────────────────────────────────────── */
         @media (max-width: 780px) {
             .board-header { display: none; }
@@ -250,10 +258,13 @@
 <header>
     <div class="header-inner">
         <div>
-            <h1>🏆 เชียร์บอลโลก 2026</h1>
-            <div class="header-sub">สรุปสถานะทีม — เข้ารอบ 32 ทีม · คลิกที่ทีมเพื่อดูข้อมูล</div>
+            <h1 id="h-title">🏆 เชียร์บอลโลก 2026</h1>
+            <div class="header-sub" id="h-sub">สรุปสถานะทีม — เข้ารอบ 32 ทีม · คลิกที่ทีมเพื่อดูข้อมูล</div>
         </div>
-        <a class="back-btn" href="index.html">← กลับหน้าจับฉลาก</a>
+        <div style="display:flex;gap:8px;align-items:center">
+            <a class="back-btn" id="h-back" href="index.html">← กลับหน้าจับฉลาก</a>
+            <button class="lang-btn" id="langBtn" onclick="toggleLang()">EN</button>
+        </div>
     </div>
 </header>
 
@@ -264,13 +275,13 @@
 
 <div class="main">
     <div class="legend">
-        <span class="legend-item"><span class="ldot ldot-q"></span>เข้ารอบแล้ว</span>
-        <span class="legend-item"><span class="ldot ldot-a"></span>ยังลุ้น</span>
-        <span class="legend-item"><span class="ldot ldot-e"></span>ตกรอบ</span>
-        <span class="legend-hint">คลิกที่การ์ดทีมเพื่อดูผลและโปรแกรม</span>
+        <span class="legend-item"><span class="ldot ldot-q"></span><span id="leg-q">เข้ารอบแล้ว</span></span>
+        <span class="legend-item"><span class="ldot ldot-a"></span><span id="leg-a">ยังลุ้น</span></span>
+        <span class="legend-item"><span class="ldot ldot-e"></span><span id="leg-e">ตกรอบ</span></span>
+        <span class="legend-hint" id="leg-hint">คลิกที่การ์ดทีมเพื่อดูผลและโปรแกรม</span>
     </div>
 
-    <div class="board-header">
+    <div class="board-header" id="boardHeader">
         <div class="bh-left">ผู้เล่น</div>
         <div>ทีม 1</div><div>ทีม 2</div><div>ทีม 3</div><div>ทีม 4</div>
         <div>เข้ารอบ</div>
@@ -305,6 +316,75 @@ function flagImg(name, cls) {
 }
 
 const TODAY_DATE = "Jun 20";
+
+// ── i18n ─────────────────────────────────────────────────────────────────────
+const PLAYER_EN = {
+    "ก้อง":"Kong","แว่น":"OakVaan","มิว":"Mew",
+    "นุ":"Nuu","ตือ":"Oou","พิม":"Pim",
+    "บลู":"Chablue","อาม":"Arm","เรีย":"Lea"
+};
+
+const STRINGS = {
+    th: {
+        title:      "เชียร์บอลโลก 2026",
+        subtitle:   "สรุปสถานะทีม — เข้ารอบ 32 ทีม · คลิกที่ทีมเพื่อดูข้อมูล",
+        backBtn:    "← กลับหน้าจับฉลาก",
+        legendQ:    "เข้ารอบแล้ว", legendA: "ยังลุ้น", legendE: "ตกรอบ",
+        legendHint: "คลิกที่การ์ดทีมเพื่อดูผลและโปรแกรม",
+        colPlayer:  "ผู้เล่น", colTeam: n => `ทีม ${n}`, colQual: "เข้ารอบ",
+        badgeQ: "✅ เข้ารอบ", badgeA: "🟡 ยังลุ้น", badgeE: "❌ ตกรอบ",
+        group:      g => `กลุ่ม ${g}`,
+        scoreSub:   "เข้ารอบ",
+        scoreDetail:(a, e) => `${a} ลุ้น · ${e} ตก`,
+        popupResults:  "📋 ผลการแข่งขัน",
+        popupUpcoming: "📅 โปรแกรมต่อไป",
+        popupOdds:     "📊 โอกาสเข้ารอบ 32 ทีม (FoxSports)",
+        popupGroup:    (g, pot) => `กลุ่ม ${g} · Pot ${pot}`,
+        lastUpdated:   d => `อัปเดตล่าสุด: ${d} · ข้อมูลโอกาส: FoxSports`,
+    },
+    en: {
+        title:      "World Cup 2026 Tracker",
+        subtitle:   "Team status — Round of 32 · Click a team for details",
+        backBtn:    "← Back to picker",
+        legendQ:    "Qualified", legendA: "In contention", legendE: "Eliminated",
+        legendHint: "Click a team card for results and fixtures",
+        colPlayer:  "Player", colTeam: n => `Team ${n}`, colQual: "Qualified",
+        badgeQ: "✅ Qualified", badgeA: "🟡 Alive", badgeE: "❌ Out",
+        group:      g => `Group ${g}`,
+        scoreSub:   "qualified",
+        scoreDetail:(a, e) => `${a} alive · ${e} out`,
+        popupResults:  "📋 Results",
+        popupUpcoming: "📅 Upcoming",
+        popupOdds:     "📊 Qualify chance (FoxSports)",
+        popupGroup:    (g, pot) => `Group ${g} · Pot ${pot}`,
+        lastUpdated:   d => `Last updated: ${d} · Odds: FoxSports`,
+    }
+};
+
+let lang = localStorage.getItem('wc-lang') || 'th';
+
+function toggleLang() {
+    lang = lang === 'th' ? 'en' : 'th';
+    localStorage.setItem('wc-lang', lang);
+    applyLang();
+}
+
+function applyLang() {
+    const s = STRINGS[lang];
+    document.getElementById('h-title').textContent  = '🏆 ' + s.title;
+    document.getElementById('h-sub').textContent    = s.subtitle;
+    document.getElementById('h-back').textContent   = s.backBtn;
+    document.getElementById('leg-q').textContent    = s.legendQ;
+    document.getElementById('leg-a').textContent    = s.legendA;
+    document.getElementById('leg-e').textContent    = s.legendE;
+    document.getElementById('leg-hint').textContent = s.legendHint;
+    document.getElementById('langBtn').textContent  = lang === 'th' ? 'EN' : 'TH';
+    document.getElementById('boardHeader').innerHTML =
+        `<div class="bh-left">${s.colPlayer}</div>` +
+        `<div>${s.colTeam(1)}</div><div>${s.colTeam(2)}</div><div>${s.colTeam(3)}</div><div>${s.colTeam(4)}</div>` +
+        `<div>${s.colQual}</div>`;
+    render();
+}
 
 // qualifyPct source: FoxSports odds (Jun 20 2026), converted from American odds.
 // Teams not listed: estimated from current standings.
@@ -453,11 +533,10 @@ function pctColor(pct) {
     return 'var(--red)';
 }
 
-const BADGE_LABEL = {
-    qualified: '✅ เข้ารอบ',
-    alive:     '🟡 ยังลุ้น',
-    eliminated:'❌ ตกรอบ'
-};
+function badgeLabel(st) {
+    const s = STRINGS[lang];
+    return { qualified: s.badgeQ, alive: s.badgeA, eliminated: s.badgeE }[st];
+}
 
 // ── Popup ────────────────────────────────────────────────────────────────────
 let openKey = null;
@@ -501,15 +580,15 @@ function positionPopup(cardEl) {
 }
 
 function buildPopup(team) {
+    const s      = STRINGS[lang];
     const status = getStatus(team.qualifyPct);
     const pc     = pctColor(team.qualifyPct);
 
-    // Played matches
     let playedHtml = '';
     if (team.played && team.played.length) {
         playedHtml = `
         <div class="popup-section">
-            <div class="popup-section-title">📋 ผลการแข่งขัน</div>
+            <div class="popup-section-title">${s.popupResults}</div>
             ${team.played.map(m => `
                 <div class="popup-match">
                     <span class="popup-date">${m.date}</span>
@@ -520,12 +599,11 @@ function buildPopup(team) {
         </div>`;
     }
 
-    // Upcoming matches
     let nextHtml = '';
     if (team.next && team.next.length && status !== 'eliminated') {
         nextHtml = `
         <div class="popup-section">
-            <div class="popup-section-title">📅 โปรแกรมต่อไป</div>
+            <div class="popup-section-title">${s.popupUpcoming}</div>
             ${team.next.map(m => {
                 const isToday = m.date === TODAY_DATE;
                 return `
@@ -538,10 +616,9 @@ function buildPopup(team) {
         </div>`;
     }
 
-    // Qualify %
     const pctHtml = `
         <div class="popup-section">
-            <div class="popup-section-title">📊 โอกาสเข้ารอบ 32 ทีม (FoxSports)</div>
+            <div class="popup-section-title">${s.popupOdds}</div>
             <div class="pct-row">
                 <div class="pct-bar-wrap">
                     <div class="pct-bar" style="width:${team.qualifyPct}%;background:${pc}"></div>
@@ -555,7 +632,7 @@ function buildPopup(team) {
             ${flagImg(team.name, 'popup-flag')}
             <div>
                 <div class="popup-title">${team.name}</div>
-                <div class="popup-sub">กลุ่ม ${team.group} · Pot ${team.pot}</div>
+                <div class="popup-sub">${s.popupGroup(team.group, team.pot)}</div>
             </div>
             <button class="popup-close" onclick="closePopup()">×</button>
         </div>
@@ -566,7 +643,7 @@ function buildPopup(team) {
 
 // ── Render ───────────────────────────────────────────────────────────────────
 const data = SEED;
-window.addEventListener('load', render);
+window.addEventListener('load', applyLang);
 
 function render() {
     const board = document.getElementById('board');
@@ -601,8 +678,8 @@ function render() {
                 <div class="pot-lbl">P${t.pot}</div>
                 <div class="card-left">
                     ${flagImg(t.name, 'team-flag')}
-                    <div class="team-group">กลุ่ม ${t.group}</div>
-                    <div class="team-badge">${BADGE_LABEL[st]}</div>
+                    <div class="team-group">${STRINGS[lang].group(t.group)}</div>
+                    <div class="team-badge">${badgeLabel(st)}</div>
                 </div>
                 <div class="card-right">
                     ${matchRows}
@@ -618,18 +695,18 @@ function render() {
 
         return `
         <div class="player-row">
-            <div class="player-name">${p.name}</div>
+            <div class="player-name">${lang === 'en' ? (PLAYER_EN[p.name] || p.name) : p.name}</div>
             <div class="teams-wrap">${cards}</div>
             <div class="score-cell">
                 <div class="score-big">${q}<span style="font-size:1rem;color:var(--muted)">/4</span></div>
-                <div class="score-sub">เข้ารอบ</div>
-                <div class="score-detail">${a} ลุ้น · ${e} ตก</div>
+                <div class="score-sub">${STRINGS[lang].scoreSub}</div>
+                <div class="score-detail">${STRINGS[lang].scoreDetail(a, e)}</div>
             </div>
         </div>`;
     }).join('');
 
     document.getElementById('footer').textContent =
-        data.lastUpdated ? `อัปเดตล่าสุด: ${data.lastUpdated} · ข้อมูลโอกาส: FoxSports` : '';
+        data.lastUpdated ? STRINGS[lang].lastUpdated(data.lastUpdated) : '';
 }
 </script>
 </body>
