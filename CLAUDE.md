@@ -1,15 +1,17 @@
 # WorldCup Picker — Project Notes
 
 ## What this is
-A two-page web app for a friend group to randomly pick World Cup 2026 teams and track their progress. Hosted on GitHub Pages. No build step — pure HTML/CSS/JS.
+A three-page web app for a friend group to randomly pick World Cup 2026 teams and track their progress. Hosted on GitHub Pages. No build step — pure HTML/CSS/JS.
 
 **Live URLs:**
 - Picker: `https://sarunwi.github.io/worldcup-picker/`
 - Scoreboard: `https://sarunwi.github.io/worldcup-picker/scoreboard.html`
+- Worst Pick: `https://sarunwi.github.io/worldcup-picker/worst.html`
 
 ## Files
 - `index.html` — Spinning wheel team picker
 - `scoreboard.html` — Live scoreboard tracking each player's teams
+- `worst.html` — Shame ranking: worst team among all picks wins a special award
 
 ## Firebase
 - Project: `worldcup-picker` (Firestore, free tier)
@@ -30,8 +32,9 @@ A two-page web app for a friend group to randomly pick World Cup 2026 teams and 
 | เรีย | Lea | Brazil | Ecuador | Egypt | Turkey |
 
 ## Scoring system
-At the end of the tournament: whoever picked the **1st and 2nd place teams** wins.
-No points system during the tournament — the scoreboard just tracks who makes the Round of 32.
+- **Main award**: whoever picked the **1st and 2nd place teams** wins.
+- **Worst Pick award**: whoever has the single worst-performing team (most losses, most goals conceded, fewest goals scored) wins a shame prize.
+- No points system during the tournament — the scoreboard just tracks who makes the Round of 32.
 
 ## Scoreboard UI features
 - **Team cards**: two-column layout — flag image (flagcdn.com) + group + status badge on left; match results with W/D/L badges + upcoming fixtures + qualify % bar on right
@@ -39,6 +42,16 @@ No points system during the tournament — the scoreboard just tracks who makes 
 - **Language toggle**: TH/EN button in header switches all text including player names; preference saved in `localStorage` under key `wc-lang`
 - **Status badge**: auto-derived from `qualifyPct` — 100 = qualified, 0 = eliminated, else alive
 - **Flag images**: from `https://flagcdn.com/w80/{code}.png`; Scotland = `gb-sct`, England = `gb-eng`
+- **Navigation**: header links to Picker, Worst Pick page, and lang toggle
+
+## Worst Pick page (`worst.html`)
+- **Shame crown**: big featured card for the current worst team (the #1 shame leader)
+- **Full team ranking**: all 36 picked teams sorted worst → best
+- **Sort order**: losses DESC → goals conceded DESC → goals scored ASC (fewer goals = more shameful)
+- **Columns**: GP, L (red if > 0), GA (red if > 0), GF
+- **Highlighting**: #1 gets 💀 icon + red border glow; ranks 2–3 get fading red border; teams with 0 losses + 0 GA are faded
+- **Language toggle**: shares the same `wc-lang` localStorage key as scoreboard
+- **Updating**: `worst.html` copies the same `SEED` data block as `scoreboard.html` — keep both in sync when updating match results
 
 ## Updating the scoreboard
 When asked to update, Claude should:
