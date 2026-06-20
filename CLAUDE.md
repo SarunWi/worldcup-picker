@@ -14,24 +14,31 @@ A two-page web app for a friend group to randomly pick World Cup 2026 teams and 
 ## Firebase
 - Project: `worldcup-picker` (Firestore, free tier)
 - Picker state: `/rooms/{roomCode}` — synced in real-time across devices
-- Scoreboard data: `/scoreboard/main` — single document, manually seeded
+- Scoreboard: **no longer uses Firestore**. Renders directly from the `SEED` constant in `scoreboard.html`. Firebase SDKs were removed from scoreboard.html entirely.
 
 ## Players & their teams (draft: 2026-06-19)
-| Player | Pot 1 | Pot 2 | Pot 3 | Pot 4 |
-|--------|-------|-------|-------|-------|
-| ก้อง | Belgium | Morocco | Qatar | DR Congo |
-| แว่น | Argentina | Japan | Scotland | New Zealand |
-| มิว | France | Uruguay | Tunisia | Cabo Verde |
-| นุ | Spain | Croatia | South Africa | Jordan |
-| ตือ | Germany | Australia | Algeria | Ghana |
-| พิม | England | Austria | Paraguay | Curaçao |
-| บลู | Netherlands | Switzerland | Norway | Haiti |
-| อาม | Portugal | Senegal | Uzbekistan | Iraq |
-| เรีย | Brazil | Ecuador | Egypt | Turkey |
+| Thai name | English name | Pot 1 | Pot 2 | Pot 3 | Pot 4 |
+|-----------|--------------|-------|-------|-------|-------|
+| ก้อง | Kong | Belgium | Morocco | Qatar | DR Congo |
+| แว่น | OakVaan | Argentina | Japan | Scotland | New Zealand |
+| มิว | Mew | France | Uruguay | Tunisia | Cabo Verde |
+| นุ | Nuu | Spain | Croatia | South Africa | Jordan |
+| ตือ | Oou | Germany | Australia | Algeria | Ghana |
+| พิม | Pim | England | Austria | Paraguay | Curaçao |
+| บลู | Chablue | Netherlands | Switzerland | Norway | Haiti |
+| อาม | Arm | Portugal | Senegal | Uzbekistan | Iraq |
+| เรีย | Lea | Brazil | Ecuador | Egypt | Turkey |
 
 ## Scoring system
 At the end of the tournament: whoever picked the **1st and 2nd place teams** wins.
 No points system during the tournament — the scoreboard just tracks who makes the Round of 32.
+
+## Scoreboard UI features
+- **Team cards**: two-column layout — flag image (flagcdn.com) + group + status badge on left; match results with W/D/L badges + upcoming fixtures + qualify % bar on right
+- **Click popup**: shows full match history, upcoming schedule, and qualify % bar
+- **Language toggle**: TH/EN button in header switches all text including player names; preference saved in `localStorage` under key `wc-lang`
+- **Status badge**: auto-derived from `qualifyPct` — 100 = qualified, 0 = eliminated, else alive
+- **Flag images**: from `https://flagcdn.com/w80/{code}.png`; Scotland = `gb-sct`, England = `gb-eng`
 
 ## Updating the scoreboard
 When asked to update, Claude should:
