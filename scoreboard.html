@@ -218,6 +218,23 @@
         .pct-bar { height: 100%; border-radius: 4px; transition: width .4s ease; }
         .pct-num { font-weight: 800; font-size: .85rem; min-width: 38px; text-align: right; }
 
+        /* ── Filter bar ──────────────────────────────────────── */
+        .filter-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+        .filter-input {
+            flex: 1; max-width: 280px;
+            background: var(--card); border: 1px solid var(--border);
+            color: var(--text); padding: 7px 12px; border-radius: 8px;
+            font-size: .85rem; outline: none; font-family: inherit;
+        }
+        .filter-input:focus { border-color: var(--green); }
+        .filter-input::placeholder { color: var(--muted); }
+        .filter-clear {
+            background: none; border: none; color: var(--muted);
+            font-size: 1.1rem; cursor: pointer; padding: 2px 6px;
+            border-radius: 6px; line-height: 1;
+        }
+        .filter-clear:hover { color: var(--text); background: var(--card); }
+
         /* ── Footer ──────────────────────────────────────────── */
         .footer {
             text-align: center; color: var(--muted); font-size: .73rem;
@@ -280,6 +297,12 @@
         <span class="legend-item"><span class="ldot ldot-a"></span><span id="leg-a">ยังลุ้น</span></span>
         <span class="legend-item"><span class="ldot ldot-e"></span><span id="leg-e">ตกรอบ</span></span>
         <span class="legend-hint" id="leg-hint">คลิกที่การ์ดทีมเพื่อดูผลและโปรแกรม</span>
+    </div>
+
+    <div class="filter-bar">
+        <input class="filter-input" id="filterInput" type="text" autocomplete="off"
+               placeholder="🔍 Filter by team…" oninput="setFilter(this.value)">
+        <button class="filter-clear" id="filterClear" onclick="clearFilter()" style="display:none">✕</button>
     </div>
 
     <div class="board-header" id="boardHeader">
@@ -642,6 +665,22 @@ function buildPopup(team) {
         ${pctHtml}`;
 }
 
+// ── Filter ───────────────────────────────────────────────────────────────────
+let filterText = '';
+function setFilter(val) {
+    filterText = val.trim().toLowerCase();
+    document.getElementById('filterClear').style.display = filterText ? '' : 'none';
+    document.getElementById('boardHeader').style.display = filterText ? 'none' : '';
+    render();
+}
+function clearFilter() {
+    filterText = '';
+    document.getElementById('filterInput').value = '';
+    document.getElementById('filterClear').style.display = 'none';
+    document.getElementById('boardHeader').style.display = '';
+    render();
+}
+
 // ── Render ───────────────────────────────────────────────────────────────────
 const data = SEED;
 window.addEventListener('load', applyLang);
@@ -650,11 +689,14 @@ function render() {
     const board = document.getElementById('board');
 
     board.innerHTML = data.players.map((p, pi) => {
+        if (filterText && !p.teams.some(t => t.name.toLowerCase().includes(filterText))) return '';
+
         const q = p.teams.filter(t => getStatus(t.qualifyPct) === 'qualified').length;
         const a = p.teams.filter(t => getStatus(t.qualifyPct) === 'alive').length;
         const e = p.teams.filter(t => getStatus(t.qualifyPct) === 'eliminated').length;
 
         const cards = p.teams.map((t, ti) => {
+            const hidden = filterText && !t.name.toLowerCase().includes(filterText);
             const st  = getStatus(t.qualifyPct);
             const pc  = pctColor(t.qualifyPct);
 
@@ -675,7 +717,7 @@ function render() {
             ].join('');
 
             return `
-            <div class="team-card s-${st}" onclick="togglePopup(${pi},${ti},this)">
+            <div class="team-card s-${st}"${hidden ? ' style="display:none"' : ''} onclick="togglePopup(${pi},${ti},this)">
                 <div class="pot-lbl">P${t.pot}</div>
                 <div class="card-left">
                     ${flagImg(t.name, 'team-flag')}
