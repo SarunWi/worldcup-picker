@@ -243,6 +243,14 @@
         }
         .group-chip:hover { border-color: var(--green); }
         .group-chip.active { background: var(--green); border-color: var(--green); color: #000; }
+        .extras-section { margin-top: 14px; }
+        .extras-header {
+            font-size: .7rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; padding-left: 2px;
+        }
+        .extras-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 6px; }
+        .extra-card { opacity: .82; }
+        .extra-card:hover { opacity: 1; }
 
         /* ── Footer ──────────────────────────────────────────── */
         .footer {
@@ -326,6 +334,8 @@
         <div style="text-align:center;color:var(--muted);padding:48px">กำลังโหลด…</div>
     </div>
 
+    <div id="extrasSection"></div>
+
     <div class="footer" id="footer"></div>
 </div>
 
@@ -341,7 +351,11 @@ const FLAG_CODES = {
     "England":"gb-eng","Austria":"at","Paraguay":"py","Curaçao":"cw",
     "Netherlands":"nl","Switzerland":"ch","Norway":"no","Haiti":"ht",
     "Portugal":"pt","Senegal":"sn","Uzbekistan":"uz","Iraq":"iq",
-    "Brazil":"br","Ecuador":"ec","Egypt":"eg","Turkey":"tr"
+    "Brazil":"br","Ecuador":"ec","Egypt":"eg","Turkey":"tr",
+    "Mexico":"mx","South Korea":"kr","Czechia":"cz",
+    "Canada":"ca","Bosnia":"ba","USA":"us",
+    "Ivory Coast":"ci","Sweden":"se","Iran":"ir",
+    "Saudi Arabia":"sa","Colombia":"co","Panama":"pa"
 };
 
 function flagImg(name, cls) {
@@ -552,6 +566,44 @@ const SEED = {
               played:[{date:"Jun 13",vs:"Australia",score:"0-2",wdl:"L"},{date:"Jun 19",vs:"Paraguay",score:"0-1",wdl:"L"}],
               next:[] }
         ]}
+    ],
+    extras: [
+        { name:"Mexico",       group:"A", qualifyPct:100,
+          played:[{date:"Jun 11",vs:"South Africa",score:"2-0",wdl:"W"},{date:"Jun 18",vs:"South Korea",score:"1-0",wdl:"W"}],
+          next:[{date:"Jun 24",vs:"Czechia"}] },
+        { name:"South Korea",  group:"A", qualifyPct:65,
+          played:[{date:"Jun 11",vs:"Czechia",score:"2-1",wdl:"W"},{date:"Jun 18",vs:"Mexico",score:"0-1",wdl:"L"}],
+          next:[{date:"Jun 24",vs:"South Africa"}] },
+        { name:"Czechia",      group:"A", qualifyPct:20,
+          played:[{date:"Jun 11",vs:"South Korea",score:"1-2",wdl:"L"},{date:"Jun 18",vs:"South Africa",score:"1-1",wdl:"D"}],
+          next:[{date:"Jun 24",vs:"Mexico"}] },
+        { name:"Canada",       group:"B", qualifyPct:82,
+          played:[{date:"Jun 12",vs:"Bosnia",score:"1-1",wdl:"D"},{date:"Jun 18",vs:"Qatar",score:"6-0",wdl:"W"}],
+          next:[{date:"Jun 24",vs:"Switzerland"}] },
+        { name:"Bosnia",       group:"B", qualifyPct:18,
+          played:[{date:"Jun 12",vs:"Canada",score:"1-1",wdl:"D"},{date:"Jun 18",vs:"Switzerland",score:"1-4",wdl:"L"}],
+          next:[{date:"Jun 24",vs:"Qatar"}] },
+        { name:"USA",          group:"D", qualifyPct:100,
+          played:[{date:"Jun 12",vs:"Paraguay",score:"4-1",wdl:"W"},{date:"Jun 19",vs:"Australia",score:"2-0",wdl:"W"}],
+          next:[{date:"Jun 25",vs:"Turkey"}] },
+        { name:"Ivory Coast",  group:"E", qualifyPct:68,
+          played:[{date:"Jun 14",vs:"Ecuador",score:"1-0",wdl:"W"}],
+          next:[{date:"Jun 20",vs:"Germany"},{date:"Jun 25",vs:"Curaçao"}] },
+        { name:"Sweden",       group:"F", qualifyPct:55,
+          played:[{date:"Jun 14",vs:"Tunisia",score:"5-1",wdl:"W"},{date:"Jun 20",vs:"Netherlands",score:"1-5",wdl:"L"}],
+          next:[{date:"Jun 25",vs:"Japan"}] },
+        { name:"Iran",         group:"G", qualifyPct:42,
+          played:[{date:"Jun 15",vs:"New Zealand",score:"2-2",wdl:"D"}],
+          next:[{date:"Jun 21",vs:"Belgium"},{date:"Jun 26",vs:"Egypt"}] },
+        { name:"Saudi Arabia", group:"H", qualifyPct:38,
+          played:[{date:"Jun 15",vs:"Uruguay",score:"1-1",wdl:"D"}],
+          next:[{date:"Jun 21",vs:"Spain"},{date:"Jun 26",vs:"Cabo Verde"}] },
+        { name:"Colombia",     group:"K", qualifyPct:82,
+          played:[{date:"Jun 17",vs:"Uzbekistan",score:"3-1",wdl:"W"}],
+          next:[{date:"Jun 23",vs:"DR Congo"},{date:"Jun 27",vs:"Portugal"}] },
+        { name:"Panama",       group:"L", qualifyPct:12,
+          played:[{date:"Jun 17",vs:"Ghana",score:"0-1",wdl:"L"}],
+          next:[{date:"Jun 23",vs:"Croatia"},{date:"Jun 27",vs:"England"}] }
     ]
 };
 
@@ -705,6 +757,57 @@ function clearFilter() {
     updateBoardHeader();
     render();
 }
+function renderExtras() {
+    const section = document.getElementById('extrasSection');
+    if (!filterGroup) { section.innerHTML = ''; return; }
+    const teams = (data.extras || []).filter(t => t.group === filterGroup);
+    if (teams.length === 0) { section.innerHTML = ''; return; }
+
+    const cards = teams.map(t => {
+        const st = getStatus(t.qualifyPct);
+        const pc = pctColor(t.qualifyPct);
+        const matchRows = [
+            ...(t.played || []).map(m => `
+                <div class="card-match">
+                    <span class="card-date">${m.date}</span>
+                    <span class="card-vs">vs ${m.vs}</span>
+                    <span class="card-score">${m.score}</span>
+                    <span class="card-wdl wdl-${m.wdl}">${m.wdl}</span>
+                </div>`),
+            ...(t.next || []).map(m => `
+                <div class="card-match card-next">
+                    <span class="card-date">${m.date}</span>
+                    <span class="card-vs">vs ${m.vs}</span>
+                    ${m.date === TODAY_DATE ? '<span class="today-badge">TODAY</span>' : ''}
+                </div>`)
+        ].join('');
+        return `
+        <div class="team-card s-${st} extra-card">
+            <div class="card-left">
+                ${flagImg(t.name, 'team-flag')}
+                <div class="team-group">${STRINGS[lang].group(t.group)}</div>
+                <div class="team-badge">${badgeLabel(st)}</div>
+            </div>
+            <div class="card-right">
+                <div style="font-size:.58rem;color:var(--muted);margin-bottom:2px">— not picked —</div>
+                ${matchRows}
+                <div class="card-pct">
+                    <div class="card-pct-bar-wrap">
+                        <div class="card-pct-bar" style="width:${t.qualifyPct}%;background:${pc}"></div>
+                    </div>
+                    <span class="card-pct-num" style="color:${pc}">${t.qualifyPct}%</span>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+
+    section.innerHTML = `
+        <div class="extras-section">
+            <div class="extras-header">Group ${filterGroup} — Other teams</div>
+            <div class="extras-grid">${cards}</div>
+        </div>`;
+}
+
 function buildGroupChips() {
     const groups = [...new Set(
         data.players.flatMap(p => p.teams.map(t => t.group))
@@ -785,6 +888,7 @@ function render() {
         </div>`;
     }).join('');
 
+    renderExtras();
     document.getElementById('footer').textContent =
         data.lastUpdated ? STRINGS[lang].lastUpdated(data.lastUpdated) : '';
 }
