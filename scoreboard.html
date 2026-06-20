@@ -339,6 +339,7 @@
     <div class="footer" id="footer"></div>
 </div>
 
+<script src="teams.js"></script>
 <script>
 
 // ── Static maps ─────────────────────────────────────────────────────────────
@@ -435,176 +436,22 @@ function applyLang() {
     render();
 }
 
-// qualifyPct source: FoxSports odds (Jun 20 2026), converted from American odds.
-// Teams not listed: estimated from current standings.
+// Player-team assignments — never changes after draft.
+// Match data lives in teams.js (teamByName). Update that file only.
 const SEED = {
-    lastUpdated: "21 มิ.ย. 2026",
     players: [
-        { name:"ก้อง", teams:[
-            { name:"Belgium",    group:"G", pot:1, qualifyPct:96,
-              played:[{date:"Jun 15",vs:"Egypt",score:"1-1",wdl:"D"}],
-              next:[{date:"Jun 21",vs:"Iran"},{date:"Jun 26",vs:"New Zealand"}] },
-            { name:"Morocco",    group:"C", pot:2, qualifyPct:95,
-              played:[{date:"Jun 13",vs:"Brazil",score:"1-1",wdl:"D"},{date:"Jun 19",vs:"Scotland",score:"1-0",wdl:"W"}],
-              next:[{date:"Jun 24",vs:"Haiti"}] },
-            { name:"Qatar",      group:"B", pot:3, qualifyPct:5,
-              played:[{date:"Jun 12",vs:"Switzerland",score:"1-1",wdl:"D"},{date:"Jun 18",vs:"Canada",score:"0-6",wdl:"L"}],
-              next:[{date:"Jun 24",vs:"Bosnia"}] },
-            { name:"DR Congo",   group:"K", pot:4, qualifyPct:50,
-              played:[{date:"Jun 17",vs:"Portugal",score:"1-1",wdl:"D"}],
-              next:[{date:"Jun 23",vs:"Colombia"},{date:"Jun 27",vs:"Uzbekistan"}] }
-        ]},
-        { name:"แว่น", teams:[
-            { name:"Argentina",  group:"J", pot:1, qualifyPct:99,
-              played:[{date:"Jun 16",vs:"Algeria",score:"3-0",wdl:"W"}],
-              next:[{date:"Jun 22",vs:"Austria"},{date:"Jun 27",vs:"Jordan"}] },
-            { name:"Japan",      group:"F", pot:2, qualifyPct:87,
-              played:[{date:"Jun 14",vs:"Netherlands",score:"2-2",wdl:"D"}],
-              next:[{date:"Jun 20",vs:"Tunisia"},{date:"Jun 25",vs:"Sweden"}] },
-            { name:"Scotland",   group:"C", pot:3, qualifyPct:75,
-              played:[{date:"Jun 13",vs:"Haiti",score:"1-0",wdl:"W"},{date:"Jun 19",vs:"Morocco",score:"0-1",wdl:"L"}],
-              next:[{date:"Jun 24",vs:"Brazil"}] },
-            { name:"New Zealand",group:"G", pot:4, qualifyPct:40,
-              played:[{date:"Jun 15",vs:"Iran",score:"2-2",wdl:"D"}],
-              next:[{date:"Jun 21",vs:"Egypt"},{date:"Jun 26",vs:"Belgium"}] }
-        ]},
-        { name:"มิว", teams:[
-            { name:"France",     group:"I", pot:1, qualifyPct:98,
-              played:[{date:"Jun 16",vs:"Senegal",score:"3-1",wdl:"W"}],
-              next:[{date:"Jun 22",vs:"Iraq"},{date:"Jun 26",vs:"Norway"}] },
-            { name:"Uruguay",    group:"H", pot:2, qualifyPct:80,
-              played:[{date:"Jun 15",vs:"Saudi Arabia",score:"1-1",wdl:"D"}],
-              next:[{date:"Jun 21",vs:"Cabo Verde"},{date:"Jun 26",vs:"Spain"}] },
-            { name:"Tunisia",    group:"F", pot:3, qualifyPct:8,
-              played:[{date:"Jun 14",vs:"Sweden",score:"1-5",wdl:"L"}],
-              next:[{date:"Jun 20",vs:"Japan"},{date:"Jun 25",vs:"Netherlands"}] },
-            { name:"Cabo Verde", group:"H", pot:4, qualifyPct:52,
-              played:[{date:"Jun 15",vs:"Spain",score:"0-0",wdl:"D"}],
-              next:[{date:"Jun 21",vs:"Uruguay"},{date:"Jun 26",vs:"Saudi Arabia"}] }
-        ]},
-        { name:"นุ", teams:[
-            { name:"Spain",       group:"H", pot:1, qualifyPct:99,
-              played:[{date:"Jun 15",vs:"Cabo Verde",score:"0-0",wdl:"D"}],
-              next:[{date:"Jun 21",vs:"Saudi Arabia"},{date:"Jun 26",vs:"Uruguay"}] },
-            { name:"Croatia",     group:"L", pot:2, qualifyPct:76,
-              played:[{date:"Jun 17",vs:"England",score:"2-4",wdl:"L"}],
-              next:[{date:"Jun 23",vs:"Panama"},{date:"Jun 27",vs:"Ghana"}] },
-            { name:"South Africa",group:"A", pot:3, qualifyPct:15,
-              played:[{date:"Jun 11",vs:"Mexico",score:"0-2",wdl:"L"},{date:"Jun 18",vs:"Czech Republic",score:"1-1",wdl:"D"}],
-              next:[{date:"Jun 24",vs:"South Korea"}] },
-            { name:"Jordan",      group:"J", pot:4, qualifyPct:3,
-              played:[{date:"Jun 16",vs:"Austria",score:"1-3",wdl:"L"}],
-              next:[{date:"Jun 22",vs:"Algeria"},{date:"Jun 27",vs:"Argentina"}] }
-        ]},
-        { name:"ตือ", teams:[
-            { name:"Germany",  group:"E", pot:1, qualifyPct:99,
-              played:[{date:"Jun 14",vs:"Curaçao",score:"7-1",wdl:"W"}],
-              next:[{date:"Jun 20",vs:"Ivory Coast"},{date:"Jun 25",vs:"Ecuador"}] },
-            { name:"Australia",group:"D", pot:2, qualifyPct:92,
-              played:[{date:"Jun 13",vs:"Turkey",score:"2-0",wdl:"W"},{date:"Jun 19",vs:"USA",score:"0-2",wdl:"L"}],
-              next:[{date:"Jun 25",vs:"Paraguay"}] },
-            { name:"Algeria",  group:"J", pot:3, qualifyPct:63,
-              played:[{date:"Jun 16",vs:"Argentina",score:"0-3",wdl:"L"}],
-              next:[{date:"Jun 22",vs:"Jordan"},{date:"Jun 27",vs:"Austria"}] },
-            { name:"Ghana",    group:"L", pot:4, qualifyPct:80,
-              played:[{date:"Jun 17",vs:"Panama",score:"1-0",wdl:"W"}],
-              next:[{date:"Jun 23",vs:"England"},{date:"Jun 27",vs:"Croatia"}] }
-        ]},
-        { name:"พิม", teams:[
-            { name:"England",  group:"L", pot:1, qualifyPct:99,
-              played:[{date:"Jun 17",vs:"Croatia",score:"4-2",wdl:"W"}],
-              next:[{date:"Jun 23",vs:"Ghana"},{date:"Jun 27",vs:"Panama"}] },
-            { name:"Austria",  group:"J", pot:2, qualifyPct:96,
-              played:[{date:"Jun 16",vs:"Jordan",score:"3-1",wdl:"W"}],
-              next:[{date:"Jun 22",vs:"Argentina"},{date:"Jun 27",vs:"Algeria"}] },
-            { name:"Paraguay", group:"D", pot:3, qualifyPct:87,
-              played:[{date:"Jun 12",vs:"USA",score:"1-4",wdl:"L"},{date:"Jun 19",vs:"Turkey",score:"1-0",wdl:"W"}],
-              next:[{date:"Jun 25",vs:"Australia"}] },
-            { name:"Curaçao",  group:"E", pot:4, qualifyPct:3,
-              played:[{date:"Jun 14",vs:"Germany",score:"1-7",wdl:"L"}],
-              next:[{date:"Jun 20",vs:"Ecuador"},{date:"Jun 25",vs:"Ivory Coast"}] }
-        ]},
-        { name:"บลู", teams:[
-            { name:"Netherlands",group:"F", pot:1, qualifyPct:97,
-              played:[{date:"Jun 14",vs:"Japan",score:"2-2",wdl:"D"},{date:"Jun 20",vs:"Sweden",score:"5-1",wdl:"W"}],
-              next:[{date:"Jun 25",vs:"Tunisia"}] },
-            { name:"Switzerland",group:"B", pot:2, qualifyPct:100,
-              played:[{date:"Jun 12",vs:"Qatar",score:"1-1",wdl:"D"},{date:"Jun 18",vs:"Bosnia",score:"4-1",wdl:"W"}],
-              next:[{date:"Jun 24",vs:"Canada"}] },
-            { name:"Norway",     group:"I", pot:3, qualifyPct:99,
-              played:[{date:"Jun 16",vs:"Iraq",score:"4-1",wdl:"W"}],
-              next:[{date:"Jun 22",vs:"Senegal"},{date:"Jun 26",vs:"France"}] },
-            { name:"Haiti",      group:"C", pot:4, qualifyPct:0,
-              played:[{date:"Jun 13",vs:"Scotland",score:"0-1",wdl:"L"},{date:"Jun 19",vs:"Brazil",score:"0-3",wdl:"L"}],
-              next:[] }
-        ]},
-        { name:"อาม", teams:[
-            { name:"Portugal",   group:"K", pot:1, qualifyPct:98,
-              played:[{date:"Jun 17",vs:"DR Congo",score:"1-1",wdl:"D"}],
-              next:[{date:"Jun 23",vs:"Uzbekistan"},{date:"Jun 27",vs:"Colombia"}] },
-            { name:"Senegal",    group:"I", pot:2, qualifyPct:67,
-              played:[{date:"Jun 16",vs:"France",score:"1-3",wdl:"L"}],
-              next:[{date:"Jun 22",vs:"Norway"},{date:"Jun 26",vs:"Iraq"}] },
-            { name:"Uzbekistan", group:"K", pot:3, qualifyPct:10,
-              played:[{date:"Jun 17",vs:"Colombia",score:"1-3",wdl:"L"}],
-              next:[{date:"Jun 23",vs:"Portugal"},{date:"Jun 27",vs:"DR Congo"}] },
-            { name:"Iraq",       group:"I", pot:4, qualifyPct:3,
-              played:[{date:"Jun 16",vs:"Norway",score:"1-4",wdl:"L"}],
-              next:[{date:"Jun 22",vs:"France"},{date:"Jun 26",vs:"Senegal"}] }
-        ]},
-        { name:"เรีย", teams:[
-            { name:"Brazil",   group:"C", pot:1, qualifyPct:99,
-              played:[{date:"Jun 13",vs:"Morocco",score:"1-1",wdl:"D"},{date:"Jun 19",vs:"Haiti",score:"3-0",wdl:"W"}],
-              next:[{date:"Jun 24",vs:"Scotland"}] },
-            { name:"Ecuador",  group:"E", pot:2, qualifyPct:83,
-              played:[{date:"Jun 14",vs:"Ivory Coast",score:"0-1",wdl:"L"}],
-              next:[{date:"Jun 20",vs:"Curaçao"},{date:"Jun 25",vs:"Germany"}] },
-            { name:"Egypt",    group:"G", pot:3, qualifyPct:87,
-              played:[{date:"Jun 15",vs:"Belgium",score:"1-1",wdl:"D"}],
-              next:[{date:"Jun 21",vs:"New Zealand"},{date:"Jun 26",vs:"Iran"}] },
-            { name:"Turkey",   group:"D", pot:4, qualifyPct:0,
-              played:[{date:"Jun 13",vs:"Australia",score:"0-2",wdl:"L"},{date:"Jun 19",vs:"Paraguay",score:"0-1",wdl:"L"}],
-              next:[] }
-        ]}
+        { name:"ก้อง",  teams:["Belgium","Morocco","Qatar","DR Congo"] },
+        { name:"แว่น",  teams:["Argentina","Japan","Scotland","New Zealand"] },
+        { name:"มิว",   teams:["France","Uruguay","Tunisia","Cabo Verde"] },
+        { name:"นุ",    teams:["Spain","Croatia","South Africa","Jordan"] },
+        { name:"ตือ",   teams:["Germany","Australia","Algeria","Ghana"] },
+        { name:"พิม",   teams:["England","Austria","Paraguay","Curaçao"] },
+        { name:"บลู",   teams:["Netherlands","Switzerland","Norway","Haiti"] },
+        { name:"อาม",   teams:["Portugal","Senegal","Uzbekistan","Iraq"] },
+        { name:"เรีย",  teams:["Brazil","Ecuador","Egypt","Turkey"] },
     ],
-    extras: [
-        { name:"Mexico",       group:"A", qualifyPct:100,
-          played:[{date:"Jun 11",vs:"South Africa",score:"2-0",wdl:"W"},{date:"Jun 18",vs:"South Korea",score:"1-0",wdl:"W"}],
-          next:[{date:"Jun 24",vs:"Czechia"}] },
-        { name:"South Korea",  group:"A", qualifyPct:65,
-          played:[{date:"Jun 11",vs:"Czechia",score:"2-1",wdl:"W"},{date:"Jun 18",vs:"Mexico",score:"0-1",wdl:"L"}],
-          next:[{date:"Jun 24",vs:"South Africa"}] },
-        { name:"Czechia",      group:"A", qualifyPct:20,
-          played:[{date:"Jun 11",vs:"South Korea",score:"1-2",wdl:"L"},{date:"Jun 18",vs:"South Africa",score:"1-1",wdl:"D"}],
-          next:[{date:"Jun 24",vs:"Mexico"}] },
-        { name:"Canada",       group:"B", qualifyPct:82,
-          played:[{date:"Jun 12",vs:"Bosnia",score:"1-1",wdl:"D"},{date:"Jun 18",vs:"Qatar",score:"6-0",wdl:"W"}],
-          next:[{date:"Jun 24",vs:"Switzerland"}] },
-        { name:"Bosnia",       group:"B", qualifyPct:18,
-          played:[{date:"Jun 12",vs:"Canada",score:"1-1",wdl:"D"},{date:"Jun 18",vs:"Switzerland",score:"1-4",wdl:"L"}],
-          next:[{date:"Jun 24",vs:"Qatar"}] },
-        { name:"USA",          group:"D", qualifyPct:100,
-          played:[{date:"Jun 12",vs:"Paraguay",score:"4-1",wdl:"W"},{date:"Jun 19",vs:"Australia",score:"2-0",wdl:"W"}],
-          next:[{date:"Jun 25",vs:"Turkey"}] },
-        { name:"Ivory Coast",  group:"E", qualifyPct:68,
-          played:[{date:"Jun 14",vs:"Ecuador",score:"1-0",wdl:"W"}],
-          next:[{date:"Jun 20",vs:"Germany"},{date:"Jun 25",vs:"Curaçao"}] },
-        { name:"Sweden",       group:"F", qualifyPct:55,
-          played:[{date:"Jun 14",vs:"Tunisia",score:"5-1",wdl:"W"},{date:"Jun 20",vs:"Netherlands",score:"1-5",wdl:"L"}],
-          next:[{date:"Jun 25",vs:"Japan"}] },
-        { name:"Iran",         group:"G", qualifyPct:42,
-          played:[{date:"Jun 15",vs:"New Zealand",score:"2-2",wdl:"D"}],
-          next:[{date:"Jun 21",vs:"Belgium"},{date:"Jun 26",vs:"Egypt"}] },
-        { name:"Saudi Arabia", group:"H", qualifyPct:38,
-          played:[{date:"Jun 15",vs:"Uruguay",score:"1-1",wdl:"D"}],
-          next:[{date:"Jun 21",vs:"Spain"},{date:"Jun 26",vs:"Cabo Verde"}] },
-        { name:"Colombia",     group:"K", qualifyPct:82,
-          played:[{date:"Jun 17",vs:"Uzbekistan",score:"3-1",wdl:"W"}],
-          next:[{date:"Jun 23",vs:"DR Congo"},{date:"Jun 27",vs:"Portugal"}] },
-        { name:"Panama",       group:"L", qualifyPct:12,
-          played:[{date:"Jun 17",vs:"Ghana",score:"0-1",wdl:"L"}],
-          next:[{date:"Jun 23",vs:"Croatia"},{date:"Jun 27",vs:"England"}] }
-    ]
+    extras: ["Mexico","South Korea","Czechia","Canada","Bosnia","USA",
+             "Ivory Coast","Sweden","Iran","Saudi Arabia","Colombia","Panama"],
 };
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
@@ -633,7 +480,7 @@ function togglePopup(pi, ti, cardEl) {
     if (openKey === key) { closePopup(); return; }
     openKey = key;
 
-    const team = data.players[pi].teams[ti];
+    const team = teamByName[data.players[pi].teams[ti]];
     const popup = document.getElementById('popup');
     popup.innerHTML = buildPopup(team);
     positionPopup(cardEl);
@@ -760,7 +607,7 @@ function clearFilter() {
 function renderExtras() {
     const section = document.getElementById('extrasSection');
     if (!filterGroup) { section.innerHTML = ''; return; }
-    const teams = (data.extras || []).filter(t => t.group === filterGroup);
+    const teams = (data.extras || []).map(n => teamByName[n]).filter(t => t.group === filterGroup);
     if (teams.length === 0) { section.innerHTML = ''; return; }
 
     const cards = teams.map(t => {
@@ -810,7 +657,7 @@ function renderExtras() {
 
 function buildGroupChips() {
     const groups = [...new Set(
-        data.players.flatMap(p => p.teams.map(t => t.group))
+        data.players.flatMap(p => p.teams.map(n => teamByName[n].group))
     )].sort();
     document.getElementById('groupChips').innerHTML =
         '<span class="chip-label">Group:</span>' +
@@ -827,16 +674,20 @@ function render() {
     const board = document.getElementById('board');
 
     board.innerHTML = data.players.map((p, pi) => {
-        const teamVisible = t => (!filterText || t.name.toLowerCase().includes(filterText))
-                               && (!filterGroup || t.group === filterGroup);
+        const teamVisible = n => {
+            const t = teamByName[n];
+            return (!filterText || n.toLowerCase().includes(filterText))
+                && (!filterGroup || t.group === filterGroup);
+        };
         if ((filterText || filterGroup) && !p.teams.some(teamVisible)) return '';
 
-        const q = p.teams.filter(t => getStatus(t.qualifyPct) === 'qualified').length;
-        const a = p.teams.filter(t => getStatus(t.qualifyPct) === 'alive').length;
-        const e = p.teams.filter(t => getStatus(t.qualifyPct) === 'eliminated').length;
+        const q = p.teams.filter(n => getStatus(teamByName[n].qualifyPct) === 'qualified').length;
+        const a = p.teams.filter(n => getStatus(teamByName[n].qualifyPct) === 'alive').length;
+        const e = p.teams.filter(n => getStatus(teamByName[n].qualifyPct) === 'eliminated').length;
 
-        const cards = p.teams.map((t, ti) => {
-            const hidden = (filterText || filterGroup) && !teamVisible(t);
+        const cards = p.teams.map((tName, ti) => {
+            const t = teamByName[tName];
+            const hidden = (filterText || filterGroup) && !teamVisible(tName);
             const st  = getStatus(t.qualifyPct);
             const pc  = pctColor(t.qualifyPct);
 
@@ -890,7 +741,7 @@ function render() {
 
     renderExtras();
     document.getElementById('footer').textContent =
-        data.lastUpdated ? STRINGS[lang].lastUpdated(data.lastUpdated) : '';
+        LAST_UPDATED ? STRINGS[lang].lastUpdated(LAST_UPDATED) : '';
 }
 </script>
 </body>
