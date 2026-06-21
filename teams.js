@@ -91,8 +91,8 @@ const teamByName = {
 
     // ── Group G ─────────────────────────────────────────────────────────────
     "Belgium": { name:"Belgium", group:"G", pot:1, qualifyPct:96,
-        played:[{date:"Jun 15",vs:"Egypt",score:"1-1",wdl:"D"}],
-        next:[{date:"Jun 21",vs:"Iran"},{date:"Jun 26",vs:"New Zealand"}] },
+        played:[{date:"Jun 15",vs:"Egypt",score:"1-1",wdl:"D"},{date:"Jun 21",vs:"Iran",score:"0-0",wdl:"D"}],
+        next:[{date:"Jun 26",vs:"New Zealand"}] },
     "Egypt": { name:"Egypt", group:"G", pot:3, qualifyPct:87,
         played:[{date:"Jun 15",vs:"Belgium",score:"1-1",wdl:"D"}],
         next:[{date:"Jun 21",vs:"New Zealand"},{date:"Jun 26",vs:"Iran"}] },
@@ -100,8 +100,8 @@ const teamByName = {
         played:[{date:"Jun 15",vs:"Iran",score:"2-2",wdl:"D"}],
         next:[{date:"Jun 21",vs:"Egypt"},{date:"Jun 26",vs:"Belgium"}] },
     "Iran": { name:"Iran", group:"G", qualifyPct:53,
-        played:[{date:"Jun 15",vs:"New Zealand",score:"2-2",wdl:"D"}],
-        next:[{date:"Jun 21",vs:"Belgium"},{date:"Jun 26",vs:"Egypt"}] },
+        played:[{date:"Jun 15",vs:"New Zealand",score:"2-2",wdl:"D"},{date:"Jun 21",vs:"Belgium",score:"0-0",wdl:"D"}],
+        next:[{date:"Jun 26",vs:"Egypt"}] },
 
     // ── Group H ─────────────────────────────────────────────────────────────
     "Spain": { name:"Spain", group:"H", pot:1, qualifyPct:99,
