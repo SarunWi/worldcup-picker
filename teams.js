@@ -45,7 +45,7 @@ const teamByName = {
         next:[{date:"Jun 24",vs:"Haiti"}] },
     "Haiti": { name:"Haiti", group:"C", pot:4, qualifyPct:0,
         played:[{date:"Jun 13",vs:"Scotland",score:"0-1",wdl:"L"},{date:"Jun 19",vs:"Brazil",score:"0-3",wdl:"L"}],
-        next:[] },
+        next:[{date:"Jun 24",vs:"Morocco"}] },
 
     // ── Group D ─────────────────────────────────────────────────────────────
     "Australia": { name:"Australia", group:"D", pot:2, qualifyPct:92,
@@ -53,7 +53,7 @@ const teamByName = {
         next:[{date:"Jun 25",vs:"Paraguay"}] },
     "Turkey": { name:"Turkey", group:"D", pot:4, qualifyPct:0,
         played:[{date:"Jun 13",vs:"Australia",score:"0-2",wdl:"L"},{date:"Jun 19",vs:"Paraguay",score:"0-1",wdl:"L"}],
-        next:[] },
+        next:[{date:"Jun 25",vs:"USA"}] },
     "Paraguay": { name:"Paraguay", group:"D", pot:3, qualifyPct:87,
         played:[{date:"Jun 12",vs:"USA",score:"1-4",wdl:"L"},{date:"Jun 19",vs:"Turkey",score:"1-0",wdl:"W"}],
         next:[{date:"Jun 25",vs:"Australia"}] },
