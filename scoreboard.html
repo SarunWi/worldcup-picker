@@ -266,6 +266,67 @@
         }
         .lang-btn:hover { border-color: var(--green); }
 
+        /* ── View toggle ─────────────────────────────────────── */
+        .view-toggle { display: flex; gap: 6px; margin-bottom: 10px; }
+        .view-btn {
+            background: var(--card); border: 1px solid var(--border);
+            color: var(--muted); padding: 6px 14px; border-radius: 8px;
+            font-size: .82rem; cursor: pointer; font-family: inherit; font-weight: 600;
+        }
+        .view-btn:hover { border-color: var(--green); color: var(--text); }
+        .view-btn.active { background: rgba(76,175,80,.15); border-color: var(--green); color: var(--green); }
+
+        /* ── Group standings view ────────────────────────────── */
+        .group-standings { display: flex; flex-direction: column; gap: 12px; }
+        .gs-section {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 10px; overflow: hidden;
+        }
+        .gs-header {
+            padding: 8px 14px; font-size: .82rem; font-weight: 700;
+            background: rgba(255,255,255,.04); border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .gs-header-letter {
+            background: var(--green); color: #000; font-size: .7rem; font-weight: 900;
+            width: 20px; height: 20px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .gs-cols {
+            display: grid;
+            grid-template-columns: 22px 1fr 70px 28px 28px 28px 28px 40px 36px;
+            padding: 4px 10px;
+            font-size: .58rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: .8px; color: var(--muted);
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+        .gs-cols span { text-align: center; }
+        .gs-cols span:nth-child(2) { text-align: left; }
+        .gs-row {
+            display: grid;
+            grid-template-columns: 22px 1fr 70px 28px 28px 28px 28px 40px 36px;
+            padding: 7px 10px;
+            border-bottom: 1px solid rgba(255,255,255,.04);
+            align-items: center; cursor: pointer; transition: background .12s;
+        }
+        .gs-row:last-child { border-bottom: none; }
+        .gs-row:hover { background: rgba(255,255,255,.04); }
+        .gs-row.s-qualified { background: rgba(76,175,80,.05); }
+        .gs-row.s-eliminated { opacity: .4; }
+        .gs-qual-divider {
+            height: 0; border-top: 2px dashed rgba(76,175,80,.35); margin: 0 10px;
+        }
+        .gs-rank { font-size: .72rem; font-weight: 700; color: var(--muted); text-align: center; }
+        .gs-rank.top2 { color: var(--green); }
+        .gs-team { display: flex; align-items: center; gap: 7px; overflow: hidden; }
+        .gs-flag { width: 26px; height: auto; border-radius: 2px; flex-shrink: 0; }
+        .gs-name { font-size: .78rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .gs-player { font-size: .65rem; color: var(--muted); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .gs-player.owned { color: var(--gold); font-weight: 700; }
+        .gs-stat { font-size: .75rem; text-align: center; }
+        .gs-stat.pts { font-weight: 900; color: var(--text); font-size: .82rem; }
+        .gs-stat.gd  { color: var(--muted); font-size: .68rem; }
+
         /* ── Mobile ──────────────────────────────────────────── */
         @media (max-width: 780px) {
             .board-header { display: none; }
@@ -275,6 +336,14 @@
             .score-cell { flex-direction: row; justify-content: flex-end; border-top: 1px solid var(--border); padding-top: 8px; gap: 8px; }
             .score-big { font-size: 1.5rem; }
             .card-date { display: none; } /* too narrow on mobile */
+
+            /* Group standings: collapse W/D/L and player on narrow screens */
+            .gs-cols, .gs-row {
+                grid-template-columns: 20px 1fr 28px 28px 40px 34px;
+            }
+            .gs-col-w, .gs-col-d, .gs-col-l, .gs-col-gd,
+            .gs-stat-w, .gs-stat-d, .gs-stat-l, .gs-stat-gd,
+            .gs-player { display: none; }
 
             /* Mobile popup: bottom sheet */
             .popup {
@@ -314,6 +383,11 @@
         <span class="legend-item"><span class="ldot ldot-a"></span><span id="leg-a">ยังลุ้น</span></span>
         <span class="legend-item"><span class="ldot ldot-e"></span><span id="leg-e">ตกรอบ</span></span>
         <span class="legend-hint" id="leg-hint">คลิกที่การ์ดทีมเพื่อดูผลและโปรแกรม</span>
+    </div>
+
+    <div class="view-toggle">
+        <button class="view-btn active" id="vBtnPlayer" onclick="setView('player')">👤 By Player</button>
+        <button class="view-btn" id="vBtnGroup" onclick="setView('group')">📊 By Group</button>
     </div>
 
     <div class="filter-bar">
@@ -467,6 +541,19 @@ function pctColor(pct) {
     return 'var(--red)';
 }
 
+function computeStandings(t) {
+    let pts = 0, gd = 0, gf = 0, gp = 0, w = 0, d = 0, l = 0;
+    (t.played || []).forEach(m => {
+        if (!m.score) return;
+        const [a, b] = m.score.split('-').map(Number);
+        gf += a; gd += a - b; gp++;
+        if (m.wdl === 'W') { pts += 3; w++; }
+        else if (m.wdl === 'D') { pts += 1; d++; }
+        else l++;
+    });
+    return { pts, gd, gf, gp, w, d, l };
+}
+
 function badgeLabel(st) {
     const s = STRINGS[lang];
     return { qualified: s.badgeQ, alive: s.badgeA, eliminated: s.badgeE }[st];
@@ -484,6 +571,16 @@ function togglePopup(pi, ti, cardEl) {
     const popup = document.getElementById('popup');
     popup.innerHTML = buildPopup(team);
     positionPopup(cardEl);
+    document.getElementById('popupOverlay').classList.add('active');
+}
+
+function togglePopupByName(name, el) {
+    if (openKey === name) { closePopup(); return; }
+    openKey = name;
+    const team = teamByName[name];
+    if (!team) return;
+    document.getElementById('popup').innerHTML = buildPopup(team);
+    positionPopup(el);
     document.getElementById('popupOverlay').classList.add('active');
 }
 
@@ -575,12 +672,23 @@ function buildPopup(team) {
         ${pctHtml}`;
 }
 
-// ── Filter ───────────────────────────────────────────────────────────────────
-let filterText = '';
+// ── Filter & view ────────────────────────────────────────────────────────────
+let filterText  = '';
 let filterGroup = '';
+let viewMode    = 'player';
 
 function updateBoardHeader() {
-    document.getElementById('boardHeader').style.display = (filterText || filterGroup) ? 'none' : '';
+    document.getElementById('boardHeader').style.display =
+        (viewMode === 'group' || filterText || filterGroup) ? 'none' : '';
+}
+
+function setView(mode) {
+    viewMode = mode;
+    document.getElementById('vBtnPlayer').classList.toggle('active', mode === 'player');
+    document.getElementById('vBtnGroup').classList.toggle('active', mode === 'group');
+    document.getElementById('groupChips').style.display = mode === 'group' ? 'none' : '';
+    updateBoardHeader();
+    render();
 }
 function setFilter(val) {
     filterText = val.trim().toLowerCase();
@@ -655,6 +763,79 @@ function renderExtras() {
         </div>`;
 }
 
+function renderGroupView() {
+    const teamOwner = {};
+    SEED.players.forEach(p => p.teams.forEach(n => { teamOwner[n] = p.name; }));
+
+    const groups = {};
+    Object.values(teamByName).forEach(t => {
+        if (!groups[t.group]) groups[t.group] = [];
+        groups[t.group].push(t);
+    });
+
+    const html = Object.keys(groups).sort().map(g => {
+        const ranked = groups[g]
+            .map(t => ({ t, ...computeStandings(t) }))
+            .sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
+
+        const visibleRows = ranked.filter(r =>
+            !filterText || r.t.name.toLowerCase().includes(filterText));
+        if (visibleRows.length === 0) return '';
+
+        const rows = ranked.map((r, i) => {
+            const t = r.t;
+            if (filterText && !t.name.toLowerCase().includes(filterText)) return '';
+            const st     = getStatus(t.qualifyPct);
+            const owner  = teamOwner[t.name];
+            const ownerDisplay = owner
+                ? (lang === 'en' ? (PLAYER_EN[owner] || owner) : owner)
+                : '—';
+            const gdStr = r.gd > 0 ? `+${r.gd}` : `${r.gd}`;
+            const divider = (i === 2 && !filterText)
+                ? '<div class="gs-qual-divider"></div>' : '';
+            return `${divider}
+            <div class="gs-row s-${st}" data-team="${t.name}" onclick="togglePopupByName(this.dataset.team,this)">
+                <span class="gs-rank${i < 2 ? ' top2' : ''}">${i + 1}</span>
+                <div class="gs-team">
+                    ${flagImg(t.name, 'gs-flag')}
+                    <span class="gs-name">${t.name}</span>
+                </div>
+                <span class="gs-player ${owner ? 'owned' : ''}">${ownerDisplay}</span>
+                <span class="gs-stat">${r.gp}</span>
+                <span class="gs-stat gs-stat-w">${r.w}</span>
+                <span class="gs-stat gs-stat-d">${r.d}</span>
+                <span class="gs-stat gs-stat-l">${r.l}</span>
+                <span class="gs-stat gd gs-stat-gd">${gdStr}</span>
+                <span class="gs-stat pts">${r.pts}</span>
+            </div>`;
+        }).join('');
+
+        return `
+        <div class="gs-section">
+            <div class="gs-header">
+                <span class="gs-header-letter">${g}</span>
+                <span>${STRINGS[lang].group(g)}</span>
+            </div>
+            <div class="gs-cols">
+                <span></span><span>Team</span>
+                <span>Player</span>
+                <span>GP</span>
+                <span class="gs-col-w">W</span>
+                <span class="gs-col-d">D</span>
+                <span class="gs-col-l">L</span>
+                <span class="gs-col-gd">GD</span>
+                <span>Pts</span>
+            </div>
+            ${rows}
+        </div>`;
+    }).join('');
+
+    document.getElementById('board').innerHTML = `<div class="group-standings">${html}</div>`;
+    document.getElementById('extrasSection').innerHTML = '';
+    document.getElementById('footer').textContent =
+        LAST_UPDATED ? STRINGS[lang].lastUpdated(LAST_UPDATED) : '';
+}
+
 function buildGroupChips() {
     const groups = [...new Set(
         data.players.flatMap(p => p.teams.map(n => teamByName[n].group))
@@ -671,6 +852,7 @@ const data = SEED;
 window.addEventListener('load', () => { buildGroupChips(); applyLang(); });
 
 function render() {
+    if (viewMode === 'group') { renderGroupView(); return; }
     const board = document.getElementById('board');
 
     board.innerHTML = data.players.map((p, pi) => {
