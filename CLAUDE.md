@@ -45,8 +45,11 @@ A three-page web app for a friend group to randomly pick World Cup 2026 teams an
 - **Flag images**: from `https://flagcdn.com/w80/{code}.png`; Scotland = `gb-sct`, England = `gb-eng`
 - **Navigation**: header links to Picker, Worst Pick page, and lang toggle
 - **Team name filter**: live text search above the board — hides non-matching cards and collapses empty player rows
-- **Group filter chips**: A–L letter buttons below the text filter — click to show only teams in that group; combines with text filter (AND logic); click again to deselect; ✕ clears both
-- **Non-picked teams**: when filtering by group, a "Group X — Other teams" section appears below the board showing cards for teams not picked by any player. All 48 WC2026 teams are in `teamByName` in `teams.js` — 36 picked (referenced from `SEED.players`), 12 non-picked referenced from `SEED.extras`
+- **Group filter chips**: A–L letter buttons below the text filter — click to show only teams in that group; combines with text filter (AND logic); click again to deselect; ✕ clears both; hidden when in Group view
+- **Non-picked teams**: when filtering by group (in Player view), a "Group X — Other teams" section appears below the board showing cards for teams not picked by any player. All 48 WC2026 teams are in `teamByName` in `teams.js` — 36 picked (referenced from `SEED.players`), 12 non-picked referenced from `SEED.extras`
+- **View toggle**: "👤 By Player" / "📊 By Group" buttons above the filter bar switch between views
+  - **Player view** (default): one row per player, 4 team cards across
+  - **Group view**: standings table per group (A–L), all 4 teams sorted by Pts → GD → GF; dashed line separates automatic qualifiers (top 2); player column highlights owners in gold, non-picked teams show "—"; clicking any row opens the same popup; text filter hides groups with no matches
 
 ## Worst Pick page (`worst.html`)
 - **Shame crown**: big featured card for the current worst team (the #1 shame leader)
