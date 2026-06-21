@@ -2,7 +2,7 @@
 // Update qualifyPct, played, next, and LAST_UPDATED here only.
 // scoreboard.html and worst.html both load this file.
 
-const LAST_UPDATED = "21 มิ.ย. 2026";
+const LAST_UPDATED = "22 มิ.ย. 2026";
 
 const teamByName = {
     // ── Group A ─────────────────────────────────────────────────────────────
@@ -65,13 +65,13 @@ const teamByName = {
     "Germany": { name:"Germany", group:"E", pot:1, qualifyPct:100,
         played:[{date:"Jun 14",vs:"Curaçao",score:"7-1",wdl:"W"},{date:"Jun 20",vs:"Ivory Coast",score:"2-1",wdl:"W"}],
         next:[{date:"Jun 25",vs:"Ecuador"}] },
-    "Ecuador": { name:"Ecuador", group:"E", pot:2, qualifyPct:83,
+    "Ecuador": { name:"Ecuador", group:"E", pot:2, qualifyPct:25,
         played:[{date:"Jun 14",vs:"Ivory Coast",score:"0-1",wdl:"L"},{date:"Jun 20",vs:"Curaçao",score:"0-0",wdl:"D"}],
         next:[{date:"Jun 25",vs:"Germany"}] },
-    "Curaçao": { name:"Curaçao", group:"E", pot:4, qualifyPct:4,
+    "Curaçao": { name:"Curaçao", group:"E", pot:4, qualifyPct:6,
         played:[{date:"Jun 14",vs:"Germany",score:"1-7",wdl:"L"},{date:"Jun 20",vs:"Ecuador",score:"0-0",wdl:"D"}],
         next:[{date:"Jun 25",vs:"Ivory Coast"}] },
-    "Ivory Coast": { name:"Ivory Coast", group:"E", qualifyPct:98,
+    "Ivory Coast": { name:"Ivory Coast", group:"E", qualifyPct:99,
         played:[{date:"Jun 14",vs:"Ecuador",score:"1-0",wdl:"W"},{date:"Jun 20",vs:"Germany",score:"1-2",wdl:"L"}],
         next:[{date:"Jun 25",vs:"Curaçao"}] },
 
@@ -105,8 +105,8 @@ const teamByName = {
 
     // ── Group H ─────────────────────────────────────────────────────────────
     "Spain": { name:"Spain", group:"H", pot:1, qualifyPct:99,
-        played:[{date:"Jun 15",vs:"Cabo Verde",score:"0-0",wdl:"D"}],
-        next:[{date:"Jun 21",vs:"Saudi Arabia"},{date:"Jun 26",vs:"Uruguay"}] },
+        played:[{date:"Jun 15",vs:"Cabo Verde",score:"0-0",wdl:"D"},{date:"Jun 21",vs:"Saudi Arabia",score:"4-0",wdl:"W"}],
+        next:[{date:"Jun 26",vs:"Uruguay"}] },
     "Uruguay": { name:"Uruguay", group:"H", pot:2, qualifyPct:80,
         played:[{date:"Jun 15",vs:"Saudi Arabia",score:"1-1",wdl:"D"}],
         next:[{date:"Jun 21",vs:"Cabo Verde"},{date:"Jun 26",vs:"Spain"}] },
@@ -114,8 +114,8 @@ const teamByName = {
         played:[{date:"Jun 15",vs:"Spain",score:"0-0",wdl:"D"}],
         next:[{date:"Jun 21",vs:"Uruguay"},{date:"Jun 26",vs:"Saudi Arabia"}] },
     "Saudi Arabia": { name:"Saudi Arabia", group:"H", qualifyPct:42,
-        played:[{date:"Jun 15",vs:"Uruguay",score:"1-1",wdl:"D"}],
-        next:[{date:"Jun 21",vs:"Spain"},{date:"Jun 26",vs:"Cabo Verde"}] },
+        played:[{date:"Jun 15",vs:"Uruguay",score:"1-1",wdl:"D"},{date:"Jun 21",vs:"Spain",score:"0-4",wdl:"L"}],
+        next:[{date:"Jun 26",vs:"Cabo Verde"}] },
 
     // ── Group I ─────────────────────────────────────────────────────────────
     "France": { name:"France", group:"I", pot:1, qualifyPct:98,
