@@ -2,7 +2,7 @@
 // Update qualifyPct, played, next, and LAST_UPDATED here only.
 // scoreboard.html and worst.html both load this file.
 
-const LAST_UPDATED = "22 มิ.ย. 2026";
+const LAST_UPDATED = "23 มิ.ย. 2026";
 
 const teamByName = {
     // ── Group A ─────────────────────────────────────────────────────────────
@@ -118,26 +118,26 @@ const teamByName = {
         next:[{date:"Jun 26",vs:"Cabo Verde"}] },
 
     // ── Group I ─────────────────────────────────────────────────────────────
-    "France": { name:"France", group:"I", pot:1, qualifyPct:98,
-        played:[{date:"Jun 16",vs:"Senegal",score:"3-1",wdl:"W"}],
-        next:[{date:"Jun 22",vs:"Iraq"},{date:"Jun 26",vs:"Norway"}] },
-    "Senegal": { name:"Senegal", group:"I", pot:2, qualifyPct:67,
-        played:[{date:"Jun 16",vs:"France",score:"1-3",wdl:"L"}],
-        next:[{date:"Jun 22",vs:"Norway"},{date:"Jun 26",vs:"Iraq"}] },
-    "Norway": { name:"Norway", group:"I", pot:3, qualifyPct:99,
-        played:[{date:"Jun 16",vs:"Iraq",score:"4-1",wdl:"W"}],
-        next:[{date:"Jun 22",vs:"Senegal"},{date:"Jun 26",vs:"France"}] },
-    "Iraq": { name:"Iraq", group:"I", pot:4, qualifyPct:8,
-        played:[{date:"Jun 16",vs:"Norway",score:"1-4",wdl:"L"}],
-        next:[{date:"Jun 22",vs:"France"},{date:"Jun 26",vs:"Senegal"}] },
+    "France": { name:"France", group:"I", pot:1, qualifyPct:100,
+        played:[{date:"Jun 16",vs:"Senegal",score:"3-1",wdl:"W"},{date:"Jun 22",vs:"Iraq",score:"3-0",wdl:"W"}],
+        next:[{date:"Jun 26",vs:"Norway"}] },
+    "Senegal": { name:"Senegal", group:"I", pot:2, qualifyPct:0,
+        played:[{date:"Jun 16",vs:"France",score:"1-3",wdl:"L"},{date:"Jun 22",vs:"Norway",score:"2-3",wdl:"L"}],
+        next:[{date:"Jun 26",vs:"Iraq"}] },
+    "Norway": { name:"Norway", group:"I", pot:3, qualifyPct:100,
+        played:[{date:"Jun 16",vs:"Iraq",score:"4-1",wdl:"W"},{date:"Jun 22",vs:"Senegal",score:"3-2",wdl:"W"}],
+        next:[{date:"Jun 26",vs:"France"}] },
+    "Iraq": { name:"Iraq", group:"I", pot:4, qualifyPct:0,
+        played:[{date:"Jun 16",vs:"Norway",score:"1-4",wdl:"L"},{date:"Jun 22",vs:"France",score:"0-3",wdl:"L"}],
+        next:[{date:"Jun 26",vs:"Senegal"}] },
 
     // ── Group J ─────────────────────────────────────────────────────────────
-    "Argentina": { name:"Argentina", group:"J", pot:1, qualifyPct:99,
-        played:[{date:"Jun 16",vs:"Algeria",score:"3-0",wdl:"W"}],
-        next:[{date:"Jun 22",vs:"Austria"},{date:"Jun 27",vs:"Jordan"}] },
+    "Argentina": { name:"Argentina", group:"J", pot:1, qualifyPct:100,
+        played:[{date:"Jun 16",vs:"Algeria",score:"3-0",wdl:"W"},{date:"Jun 22",vs:"Austria",score:"2-0",wdl:"W"}],
+        next:[{date:"Jun 27",vs:"Jordan"}] },
     "Austria": { name:"Austria", group:"J", pot:2, qualifyPct:96,
-        played:[{date:"Jun 16",vs:"Jordan",score:"3-1",wdl:"W"}],
-        next:[{date:"Jun 22",vs:"Argentina"},{date:"Jun 27",vs:"Algeria"}] },
+        played:[{date:"Jun 16",vs:"Jordan",score:"3-1",wdl:"W"},{date:"Jun 22",vs:"Argentina",score:"0-2",wdl:"L"}],
+        next:[{date:"Jun 27",vs:"Algeria"}] },
     "Algeria": { name:"Algeria", group:"J", pot:3, qualifyPct:63,
         played:[{date:"Jun 16",vs:"Argentina",score:"0-3",wdl:"L"}],
         next:[{date:"Jun 22",vs:"Jordan"},{date:"Jun 27",vs:"Austria"}] },
