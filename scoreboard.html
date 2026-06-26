@@ -326,6 +326,7 @@
         .gs-stat { font-size: .75rem; text-align: center; }
         .gs-stat.pts { font-weight: 900; color: var(--text); font-size: .82rem; }
         .gs-stat.gd  { color: var(--muted); font-size: .68rem; }
+        .gs-row-extra { opacity: .6; }
 
         /* ── Mobile ──────────────────────────────────────────── */
         @media (max-width: 780px) {
@@ -857,8 +858,7 @@ function renderPointsView() {
     const teamOwner = {};
     SEED.players.forEach(p => p.teams.forEach(n => { teamOwner[n] = p.name; }));
 
-    const ranked = SEED.players
-        .flatMap(p => p.teams.map(n => teamByName[n]))
+    const ranked = Object.values(teamByName)
         .map(t => ({ t, ...computeStandings(t) }))
         .filter(r => !filterText || r.t.name.toLowerCase().includes(filterText))
         .sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
@@ -869,8 +869,9 @@ function renderPointsView() {
         const owner = teamOwner[t.name];
         const ownerDisplay = owner ? (lang === 'en' ? (PLAYER_EN[owner] || owner) : owner) : '—';
         const gdStr = r.gd > 0 ? `+${r.gd}` : `${r.gd}`;
+        const notPicked = !owner;
         return `
-        <div class="gs-row s-${st}" data-team="${t.name}" onclick="togglePopupByName(this.dataset.team,this)">
+        <div class="gs-row s-${st}${notPicked ? ' gs-row-extra' : ''}" data-team="${t.name}" onclick="togglePopupByName(this.dataset.team,this)">
             <span class="gs-rank">${i + 1}</span>
             <div class="gs-team">
                 ${flagImg(t.name, 'gs-flag')}
