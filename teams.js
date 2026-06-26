@@ -2,7 +2,7 @@
 // Update qualifyPct, played, next, and LAST_UPDATED here only.
 // scoreboard.html and worst.html both load this file.
 
-const LAST_UPDATED = "25 มิ.ย. 2026";
+const LAST_UPDATED = "26 มิ.ย. 2026";
 
 const teamByName = {
     // ── Group A ─────────────────────────────────────────────────────────────
@@ -48,46 +48,46 @@ const teamByName = {
         next:[] },
 
     // ── Group D ─────────────────────────────────────────────────────────────
-    "Australia": { name:"Australia", group:"D", pot:2, qualifyPct:92,
-        played:[{date:"Jun 13",vs:"Turkey",score:"2-0",wdl:"W"},{date:"Jun 19",vs:"USA",score:"0-2",wdl:"L"}],
-        next:[{date:"Jun 25",vs:"Paraguay"}] },
+    "Australia": { name:"Australia", group:"D", pot:2, qualifyPct:100,
+        played:[{date:"Jun 13",vs:"Turkey",score:"2-0",wdl:"W"},{date:"Jun 19",vs:"USA",score:"0-2",wdl:"L"},{date:"Jun 25",vs:"Paraguay",score:"0-0",wdl:"D"}],
+        next:[] },
     "Turkey": { name:"Turkey", group:"D", pot:4, qualifyPct:0,
-        played:[{date:"Jun 13",vs:"Australia",score:"0-2",wdl:"L"},{date:"Jun 19",vs:"Paraguay",score:"0-1",wdl:"L"}],
-        next:[{date:"Jun 25",vs:"USA"}] },
-    "Paraguay": { name:"Paraguay", group:"D", pot:3, qualifyPct:87,
-        played:[{date:"Jun 12",vs:"USA",score:"1-4",wdl:"L"},{date:"Jun 19",vs:"Turkey",score:"1-0",wdl:"W"}],
-        next:[{date:"Jun 25",vs:"Australia"}] },
+        played:[{date:"Jun 13",vs:"Australia",score:"0-2",wdl:"L"},{date:"Jun 19",vs:"Paraguay",score:"0-1",wdl:"L"},{date:"Jun 25",vs:"USA",score:"3-2",wdl:"W"}],
+        next:[] },
+    "Paraguay": { name:"Paraguay", group:"D", pot:3, qualifyPct:60,
+        played:[{date:"Jun 12",vs:"USA",score:"1-4",wdl:"L"},{date:"Jun 19",vs:"Turkey",score:"1-0",wdl:"W"},{date:"Jun 25",vs:"Australia",score:"0-0",wdl:"D"}],
+        next:[] },
     "USA": { name:"USA", group:"D", qualifyPct:100,
-        played:[{date:"Jun 12",vs:"Paraguay",score:"4-1",wdl:"W"},{date:"Jun 19",vs:"Australia",score:"2-0",wdl:"W"}],
-        next:[{date:"Jun 25",vs:"Turkey"}] },
+        played:[{date:"Jun 12",vs:"Paraguay",score:"4-1",wdl:"W"},{date:"Jun 19",vs:"Australia",score:"2-0",wdl:"W"},{date:"Jun 25",vs:"Turkey",score:"2-3",wdl:"L"}],
+        next:[] },
 
     // ── Group E ─────────────────────────────────────────────────────────────
     "Germany": { name:"Germany", group:"E", pot:1, qualifyPct:100,
-        played:[{date:"Jun 14",vs:"Curaçao",score:"7-1",wdl:"W"},{date:"Jun 20",vs:"Ivory Coast",score:"2-1",wdl:"W"}],
-        next:[{date:"Jun 25",vs:"Ecuador"}] },
-    "Ecuador": { name:"Ecuador", group:"E", pot:2, qualifyPct:25,
-        played:[{date:"Jun 14",vs:"Ivory Coast",score:"0-1",wdl:"L"},{date:"Jun 20",vs:"Curaçao",score:"0-0",wdl:"D"}],
-        next:[{date:"Jun 25",vs:"Germany"}] },
-    "Curaçao": { name:"Curaçao", group:"E", pot:4, qualifyPct:6,
-        played:[{date:"Jun 14",vs:"Germany",score:"1-7",wdl:"L"},{date:"Jun 20",vs:"Ecuador",score:"0-0",wdl:"D"}],
-        next:[{date:"Jun 25",vs:"Ivory Coast"}] },
-    "Ivory Coast": { name:"Ivory Coast", group:"E", qualifyPct:99,
-        played:[{date:"Jun 14",vs:"Ecuador",score:"1-0",wdl:"W"},{date:"Jun 20",vs:"Germany",score:"1-2",wdl:"L"}],
-        next:[{date:"Jun 25",vs:"Curaçao"}] },
+        played:[{date:"Jun 14",vs:"Curaçao",score:"7-1",wdl:"W"},{date:"Jun 20",vs:"Ivory Coast",score:"2-1",wdl:"W"},{date:"Jun 25",vs:"Ecuador",score:"1-2",wdl:"L"}],
+        next:[] },
+    "Ecuador": { name:"Ecuador", group:"E", pot:2, qualifyPct:65,
+        played:[{date:"Jun 14",vs:"Ivory Coast",score:"0-1",wdl:"L"},{date:"Jun 20",vs:"Curaçao",score:"0-0",wdl:"D"},{date:"Jun 25",vs:"Germany",score:"2-1",wdl:"W"}],
+        next:[] },
+    "Curaçao": { name:"Curaçao", group:"E", pot:4, qualifyPct:0,
+        played:[{date:"Jun 14",vs:"Germany",score:"1-7",wdl:"L"},{date:"Jun 20",vs:"Ecuador",score:"0-0",wdl:"D"},{date:"Jun 25",vs:"Ivory Coast",score:"0-2",wdl:"L"}],
+        next:[] },
+    "Ivory Coast": { name:"Ivory Coast", group:"E", qualifyPct:100,
+        played:[{date:"Jun 14",vs:"Ecuador",score:"1-0",wdl:"W"},{date:"Jun 20",vs:"Germany",score:"1-2",wdl:"L"},{date:"Jun 25",vs:"Curaçao",score:"2-0",wdl:"W"}],
+        next:[] },
 
     // ── Group F ─────────────────────────────────────────────────────────────
-    "Netherlands": { name:"Netherlands", group:"F", pot:1, qualifyPct:93,
-        played:[{date:"Jun 14",vs:"Japan",score:"2-2",wdl:"D"},{date:"Jun 20",vs:"Sweden",score:"5-1",wdl:"W"}],
-        next:[{date:"Jun 25",vs:"Tunisia"}] },
-    "Japan": { name:"Japan", group:"F", pot:2, qualifyPct:87,
-        played:[{date:"Jun 14",vs:"Netherlands",score:"2-2",wdl:"D"},{date:"Jun 20",vs:"Tunisia",score:"4-0",wdl:"W"}],
-        next:[{date:"Jun 25",vs:"Sweden"}] },
-    "Tunisia": { name:"Tunisia", group:"F", pot:3, qualifyPct:5,
-        played:[{date:"Jun 14",vs:"Sweden",score:"1-5",wdl:"L"},{date:"Jun 20",vs:"Japan",score:"0-4",wdl:"L"}],
-        next:[{date:"Jun 25",vs:"Netherlands"}] },
-    "Sweden": { name:"Sweden", group:"F", qualifyPct:98,
-        played:[{date:"Jun 14",vs:"Tunisia",score:"5-1",wdl:"W"},{date:"Jun 20",vs:"Netherlands",score:"1-5",wdl:"L"}],
-        next:[{date:"Jun 25",vs:"Japan"}] },
+    "Netherlands": { name:"Netherlands", group:"F", pot:1, qualifyPct:100,
+        played:[{date:"Jun 14",vs:"Japan",score:"2-2",wdl:"D"},{date:"Jun 20",vs:"Sweden",score:"5-1",wdl:"W"},{date:"Jun 25",vs:"Tunisia",score:"3-1",wdl:"W"}],
+        next:[] },
+    "Japan": { name:"Japan", group:"F", pot:2, qualifyPct:100,
+        played:[{date:"Jun 14",vs:"Netherlands",score:"2-2",wdl:"D"},{date:"Jun 20",vs:"Tunisia",score:"4-0",wdl:"W"},{date:"Jun 25",vs:"Sweden",score:"1-1",wdl:"D"}],
+        next:[] },
+    "Tunisia": { name:"Tunisia", group:"F", pot:3, qualifyPct:0,
+        played:[{date:"Jun 14",vs:"Sweden",score:"1-5",wdl:"L"},{date:"Jun 20",vs:"Japan",score:"0-4",wdl:"L"},{date:"Jun 25",vs:"Netherlands",score:"1-3",wdl:"L"}],
+        next:[] },
+    "Sweden": { name:"Sweden", group:"F", qualifyPct:70,
+        played:[{date:"Jun 14",vs:"Tunisia",score:"5-1",wdl:"W"},{date:"Jun 20",vs:"Netherlands",score:"1-5",wdl:"L"},{date:"Jun 25",vs:"Japan",score:"1-1",wdl:"D"}],
+        next:[] },
 
     // ── Group G ─────────────────────────────────────────────────────────────
     "Belgium": { name:"Belgium", group:"G", pot:1, qualifyPct:96,
