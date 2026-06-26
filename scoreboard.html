@@ -399,6 +399,9 @@
     </div>
 
     <div class="group-chips" id="groupChips"></div>
+    <div id="rankingChips" style="display:none;margin-bottom:10px">
+        <button class="group-chip" id="aliveFilterBtn" onclick="toggleAliveFilter()">⚡ Alive only</button>
+    </div>
 
     <div class="board-header" id="boardHeader">
         <div class="bh-left">ผู้เล่น</div>
@@ -675,9 +678,10 @@ function buildPopup(team) {
 }
 
 // ── Filter & view ────────────────────────────────────────────────────────────
-let filterText  = '';
-let filterGroup = '';
-let viewMode    = 'player';
+let filterText       = '';
+let filterGroup      = '';
+let viewMode         = 'player';
+let rankingShowAlive = false;
 
 function updateBoardHeader() {
     document.getElementById('boardHeader').style.display =
@@ -690,6 +694,7 @@ function setView(mode) {
     document.getElementById('vBtnGroup').classList.toggle('active', mode === 'group');
     document.getElementById('vBtnRanking').classList.toggle('active', mode === 'ranking');
     document.getElementById('groupChips').style.display = (mode === 'group' || mode === 'ranking') ? 'none' : '';
+    document.getElementById('rankingChips').style.display = (mode === 'ranking') ? '' : 'none';
     updateBoardHeader();
     render();
 }
@@ -704,6 +709,11 @@ function setGroupFilter(g) {
     document.querySelectorAll('.group-chip').forEach(btn =>
         btn.classList.toggle('active', btn.dataset.group === filterGroup));
     updateBoardHeader();
+    render();
+}
+function toggleAliveFilter() {
+    rankingShowAlive = !rankingShowAlive;
+    document.getElementById('aliveFilterBtn').classList.toggle('active', rankingShowAlive);
     render();
 }
 function clearFilter() {
@@ -860,7 +870,8 @@ function renderPointsView() {
 
     const ranked = Object.values(teamByName)
         .map(t => ({ t, ...computeStandings(t) }))
-        .filter(r => !filterText || r.t.name.toLowerCase().includes(filterText))
+        .filter(r => (!filterText || r.t.name.toLowerCase().includes(filterText))
+                  && (!rankingShowAlive || (r.t.qualifyPct > 0 && r.t.qualifyPct < 100)))
         .sort((a, b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf);
 
     const rows = ranked.map((r, i) => {
