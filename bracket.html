@@ -8,110 +8,146 @@
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --bg:     #0d1b2a;
-            --card:   #162231;
-            --border: #243447;
-            --green:  #4caf50;
-            --gold:   #ffd700;
-            --text:   #dce8f0;
-            --muted:  #5a7080;
-            --yellow: #f9a825;
-            --red:    #e53935;
-            --line:   #2a4055;
+            --bg:    #0d1b2a;
+            --card:  #162231;
+            --bord:  #243447;
+            --green: #4caf50;
+            --gold:  #ffd700;
+            --text:  #dce8f0;
+            --muted: #5a7080;
+            --line:  #2a4055;
+            --COL:   156px;
+            --GAP:   32px;
+            --ARM:   16px;   /* half of GAP */
         }
         body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
 
-        /* ── Header ──────────────────────────────────────────── */
+        /* ── Header ──────────────────────────────────── */
         header { background: linear-gradient(135deg, #071810, #0f2a14); border-bottom: 2px solid var(--green); padding: 14px 20px; }
-        .header-inner { max-width: 1600px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+        .header-inner { max-width: 1800px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
         header h1 { font-size: 1.4rem; font-weight: 700; }
         .header-sub { color: var(--muted); font-size: .78rem; margin-top: 3px; }
-        .btn { background: #1a2e3e; border: 1px solid var(--border); color: var(--text); padding: 7px 14px; border-radius: 7px; text-decoration: none; font-size: .82rem; cursor: pointer; white-space: nowrap; }
+        .btn { background: #1a2e3e; border: 1px solid var(--bord); color: var(--text); padding: 7px 14px; border-radius: 7px; text-decoration: none; font-size: .82rem; cursor: pointer; white-space: nowrap; }
         .btn:hover { border-color: var(--green); }
-        .header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .hdr-btns { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-        /* ── Legend ──────────────────────────────────────────── */
-        .legend { padding: 10px 20px 0; display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: .68rem; color: var(--muted); }
+        /* ── Legend ──────────────────────────────────── */
+        .legend { padding: 10px 20px 2px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: .68rem; color: var(--muted); }
         .legend-item { display: flex; align-items: center; gap: 5px; }
         .l-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
-        /* ── Bracket scroll ──────────────────────────────────── */
-        .bracket-scroll { overflow-x: auto; padding: 12px 20px 20px; }
-        .bracket-labels { display: flex; padding-bottom: 6px; }
-        .bracket-label { width: 174px; flex-shrink: 0; text-align: center; font-size: .6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
-        .bracket-label.final { color: var(--gold); }
-        .bracket-label-gap { width: 40px; flex-shrink: 0; }
+        /* ── Bracket scroll wrapper ───────────────────── */
+        .bracket-wrap { overflow-x: auto; padding: 10px 20px 24px; }
 
-        /* ── Bracket main ────────────────────────────────────── */
-        .bracket { display: flex; flex-direction: row; align-items: stretch; min-height: 960px; }
+        /* Labels row */
+        .blabels { display: flex; align-items: flex-end; padding-bottom: 6px; min-width: max-content; }
+        .blabel { width: var(--COL); flex-shrink: 0; text-align: center; font-size: .58rem; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); padding: 0 2px; }
+        .blabel.final-lbl { color: var(--gold); }
+        .blabel-gap { width: var(--GAP); flex-shrink: 0; }
 
-        .round-col { display: flex; flex-direction: column; width: 174px; flex-shrink: 0; }
-        .round-gap  { width: 40px; flex-shrink: 0; }
+        /* ── Main bracket ────────────────────────────── */
+        .bracket { display: flex; align-items: stretch; min-height: 620px; min-width: max-content; }
 
-        /* A pair of matches that feed one next-round slot */
-        .match-pair { position: relative; display: flex; flex-direction: column; flex: 1; }
+        /* Left and right halves */
+        .lh, .rh { display: flex; align-items: stretch; }
 
-        /* Vertical bracket arm (right side) */
-        .match-pair.has-arm::after {
+        /* A column for one round */
+        .rcol { width: var(--COL); flex-shrink: 0; display: flex; flex-direction: column; }
+
+        /* Gap spacer between round columns */
+        .rgap { width: var(--GAP); flex-shrink: 0; }
+
+        /* A group of 2 matches that produce 1 next-round slot */
+        .mpair { position: relative; display: flex; flex-direction: column; flex: 1; }
+
+        /* ── Bracket arm (vertical connector) ────────── */
+        /* Left half: arm on the RIGHT */
+        .lh .mpair.arm::after {
             content: ''; position: absolute;
-            right: -20px; top: 25%; height: 50%;
-            border-right: 2px solid var(--line);
-            pointer-events: none;
+            right: calc(-1 * var(--ARM)); top: 25%; height: 50%;
+            border-right: 2px solid var(--line); pointer-events: none;
+        }
+        /* Right half: arm on the LEFT */
+        .rh .mpair.arm::after {
+            content: ''; position: absolute;
+            left: calc(-1 * var(--ARM)); top: 25%; height: 50%;
+            border-left: 2px solid var(--line); pointer-events: none;
         }
 
-        /* Slot that wraps each match card */
-        .match-slot { flex: 1; display: flex; align-items: center; padding: 4px 0; position: relative; }
+        /* Slot that wraps one match card */
+        .mslot { flex: 1; display: flex; align-items: center; padding: 4px 0; position: relative; }
 
-        /* Horizontal line going right (to bracket arm) */
-        .match-slot.cr::after {
+        /* ── Horizontal connectors ────────────────────── */
+        /* Left half: each match sends line RIGHT to arm */
+        .lh .mslot.out::after {
             content: ''; position: absolute;
-            right: -20px; top: 50%; width: 20px;
-            border-top: 2px solid var(--line);
-            pointer-events: none;
+            right: calc(-1 * var(--ARM)); top: 50%;
+            width: var(--ARM); border-top: 2px solid var(--line); pointer-events: none;
+        }
+        /* Left half: each match receives line from arm on LEFT */
+        .lh .mslot.in::before {
+            content: ''; position: absolute;
+            left: calc(-1 * var(--ARM)); top: 50%;
+            width: var(--ARM); border-top: 2px solid var(--line); pointer-events: none;
+        }
+        /* Right half: each match sends line LEFT to arm */
+        .rh .mslot.out::after {
+            content: ''; position: absolute;
+            left: calc(-1 * var(--ARM)); top: 50%;
+            width: var(--ARM); border-top: 2px solid var(--line); pointer-events: none;
+        }
+        /* Right half: each match receives line from arm on RIGHT */
+        .rh .mslot.in::before {
+            content: ''; position: absolute;
+            right: calc(-1 * var(--ARM)); top: 50%;
+            width: var(--ARM); border-top: 2px solid var(--line); pointer-events: none;
         }
 
-        /* Horizontal line coming from left (from bracket arm) */
-        .match-slot.cl::before {
-            content: ''; position: absolute;
-            left: -20px; top: 50%; width: 20px;
-            border-top: 2px solid var(--line);
-            pointer-events: none;
-        }
+        /* ── Match card ──────────────────────────────── */
+        .mcard { width: 100%; background: var(--card); border: 1px solid var(--bord); border-radius: 8px; overflow: hidden; }
+        .mdate { font-size: .5rem; color: var(--muted); text-align: center; padding: 3px 4px 2px; background: rgba(0,0,0,.2); border-bottom: 1px solid var(--bord); }
+        .mteam { display: flex; align-items: center; gap: 5px; padding: 5px 7px; min-height: 28px; }
+        .mteam + .mteam { border-top: 1px solid rgba(255,255,255,.05); }
+        .mteam.tw { background: rgba(255,215,0,.07); }
+        .mteam.tl { opacity: .42; }
 
-        /* ── Match card ──────────────────────────────────────── */
-        .match-card { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-        .match-date { font-size: .52rem; color: var(--muted); text-align: center; padding: 3px 6px 2px; background: rgba(0,0,0,.18); border-bottom: 1px solid var(--border); }
-        .match-team { display: flex; align-items: center; gap: 5px; padding: 5px 7px; position: relative; min-height: 28px; }
-        .match-team + .match-team { border-top: 1px solid rgba(255,255,255,.05); }
-        .match-team.t-winner { background: rgba(255,215,0,.07); }
-        .match-team.t-loser  { opacity: .45; }
+        .tflag { width: 20px; height: auto; border-radius: 2px; flex-shrink: 0; display: block; }
+        .tph   { width: 20px; height: 13px; background: #1e3045; border-radius: 2px; flex-shrink: 0; }
+        .tname { flex: 1; font-size: .64rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .tname.tbd { color: var(--muted); font-style: italic; font-weight: 400; font-size: .58rem; }
+        .tscore { font-weight: 800; font-size: .68rem; flex-shrink: 0; min-width: 12px; text-align: right; }
+        .tscore.w { color: var(--gold); }
+        .towner { font-size: .46rem; font-weight: 700; flex-shrink: 0; padding: 1px 3px; border-radius: 3px; background: rgba(0,0,0,.3); white-space: nowrap; }
 
-        .t-flag { width: 20px; height: auto; border-radius: 2px; flex-shrink: 0; display: block; }
-        .t-flag-ph { width: 20px; height: 13px; background: #1e3045; border-radius: 2px; flex-shrink: 0; }
-        .t-name { flex: 1; font-size: .66rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .t-name.tbd { color: var(--muted); font-weight: 400; font-style: italic; font-size: .6rem; }
-        .t-score { font-weight: 800; font-size: .7rem; flex-shrink: 0; min-width: 12px; text-align: right; }
-        .t-score.w { color: var(--gold); }
-        .t-owner { font-size: .48rem; font-weight: 700; flex-shrink: 0; padding: 1px 3px; border-radius: 3px; background: rgba(0,0,0,.3); }
-
-        /* ── Final column ────────────────────────────────────── */
+        /* ── Final (center column) ────────────────────── */
         .final-col {
-            width: 174px; flex-shrink: 0;
-            display: flex; flex-direction: column; align-items: stretch; justify-content: center;
-            gap: 8px;
+            width: var(--COL); flex-shrink: 0;
+            display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: 6px;
         }
-        .trophy-label { text-align: center; font-size: 1.8rem; line-height: 1; }
-        .final-slot { position: relative; display: flex; align-items: center; }
-        .final-slot.cl::before {
+        .trophy { text-align: center; font-size: 1.6rem; }
+
+        /* Final card receives a connector from BOTH sides */
+        .final-wrap {
+            position: relative;
+            display: flex; align-items: center;
+        }
+        /* Left connector: from SF-101 */
+        .final-wrap::before {
             content: ''; position: absolute;
-            left: -20px; top: 50%; width: 20px;
-            border-top: 2px solid var(--line);
-            pointer-events: none;
+            left: calc(-1 * var(--ARM)); top: 50%;
+            width: var(--ARM); border-top: 2px solid var(--line); pointer-events: none;
+        }
+        /* Right connector: from SF-102 */
+        .final-wrap::after {
+            content: ''; position: absolute;
+            right: calc(-1 * var(--ARM)); top: 50%;
+            width: var(--ARM); border-top: 2px solid var(--line); pointer-events: none;
         }
 
-        /* ── 3rd place ───────────────────────────────────────── */
-        .third-section { padding: 12px 20px 32px; max-width: 240px; }
-        .third-label-txt { font-size: .65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 6px; }
+        /* ── 3rd place section ────────────────────────── */
+        .third-sec { padding: 10px 20px 28px; }
+        .third-lbl { font-size: .62rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 6px; }
+        .third-card-wrap { max-width: 200px; }
     </style>
 </head>
 <body>
@@ -122,7 +158,7 @@
             <h1 id="h-title">🏆 บราเก็ต World Cup 2026</h1>
             <div class="header-sub" id="h-sub">รอบ 32 ทีม → รอบชิงชนะเลิศ</div>
         </div>
-        <div class="header-right">
+        <div class="hdr-btns">
             <a class="btn" href="scoreboard.html" id="h-score">📊 ตาราง</a>
             <a class="btn" href="worst.html">💀 Worst Pick</a>
             <a class="btn" href="index.html" id="h-pick">🎡 จับฉลาก</a>
@@ -132,29 +168,27 @@
 </header>
 
 <div class="legend" id="legend"></div>
-
-<div class="bracket-scroll">
-    <div class="bracket-labels" id="bLabels"></div>
+<div class="bracket-wrap">
+    <div class="blabels" id="blabels"></div>
     <div class="bracket" id="bracket"></div>
 </div>
-
-<div class="third-section">
-    <div class="third-label-txt" id="thirdLabel">🥉 Third Place Match</div>
-    <div id="thirdCard"></div>
+<div class="third-sec">
+    <div class="third-lbl" id="thirdLbl">🥉 Third Place Match</div>
+    <div class="third-card-wrap" id="thirdCard"></div>
 </div>
 
 <script>
-// ── Player data ────────────────────────────────────────────────
+// ── Players ────────────────────────────────────────────────────
 const PLAYERS = [
-    { name:"ก้อง", en:"Kong",    teams:["Belgium","Morocco","Qatar","DR Congo"],              color:"#4fc3f7" },
-    { name:"แว่น", en:"OakVaan", teams:["Argentina","Japan","Scotland","New Zealand"],         color:"#81c784" },
-    { name:"มิว",  en:"Mew",     teams:["France","Uruguay","Tunisia","Cabo Verde"],            color:"#ff8a65" },
-    { name:"นุ",   en:"Nuu",     teams:["Spain","Croatia","South Africa","Jordan"],            color:"#f48fb1" },
-    { name:"ตือ",  en:"Oou",     teams:["Germany","Australia","Algeria","Ghana"],              color:"#ce93d8" },
-    { name:"พิม",  en:"Pim",     teams:["England","Austria","Paraguay","Curaçao"],             color:"#ffb74d" },
-    { name:"บลู",  en:"Chablue", teams:["Netherlands","Switzerland","Norway","Haiti"],         color:"#4db6ac" },
-    { name:"อาม",  en:"Arm",     teams:["Portugal","Senegal","Uzbekistan","Iraq"],             color:"#aed581" },
-    { name:"เรีย", en:"Lea",     teams:["Brazil","Ecuador","Egypt","Turkey"],                  color:"#7986cb" },
+    { name:"ก้อง", en:"Kong",    teams:["Belgium","Morocco","Qatar","DR Congo"],             color:"#4fc3f7" },
+    { name:"แว่น", en:"OakVaan", teams:["Argentina","Japan","Scotland","New Zealand"],        color:"#81c784" },
+    { name:"มิว",  en:"Mew",     teams:["France","Uruguay","Tunisia","Cabo Verde"],           color:"#ff8a65" },
+    { name:"นุ",   en:"Nuu",     teams:["Spain","Croatia","South Africa","Jordan"],           color:"#f48fb1" },
+    { name:"ตือ",  en:"Oou",     teams:["Germany","Australia","Algeria","Ghana"],             color:"#ce93d8" },
+    { name:"พิม",  en:"Pim",     teams:["England","Austria","Paraguay","Curaçao"],            color:"#ffb74d" },
+    { name:"บลู",  en:"Chablue", teams:["Netherlands","Switzerland","Norway","Haiti"],        color:"#4db6ac" },
+    { name:"อาม",  en:"Arm",     teams:["Portugal","Senegal","Uzbekistan","Iraq"],            color:"#aed581" },
+    { name:"เรีย", en:"Lea",     teams:["Brazil","Ecuador","Egypt","Turkey"],                 color:"#7986cb" },
 ];
 const OWNER = {};
 PLAYERS.forEach(p => p.teams.forEach(t => OWNER[t] = p));
@@ -172,8 +206,7 @@ const FLAG = {
 };
 
 // ── Match data ─────────────────────────────────────────────────
-// score: "W-L" string, or null if unplayed
-// penWinner: team name if decided by penalties (optional)
+// score: "G1-G2" or null; penWinner: team name if went to pens
 const MATCHES = {
     // Round of 32
     73:  { date:"Jun 28", t1:"South Africa", t2:"Canada",      score:null },
@@ -193,14 +226,14 @@ const MATCHES = {
     87:  { date:"Jul 3",  t1:"Colombia",     t2:"Ghana",       score:null },
     88:  { date:"Jul 3",  t1:"Australia",    t2:"Egypt",       score:null },
     // Round of 16
-    89:  { date:"Jul 4",  from:[74,77],  score:null },  // W74 vs W77
-    90:  { date:"Jul 4",  from:[73,75],  score:null },  // W73 vs W75
-    91:  { date:"Jul 5",  from:[76,78],  score:null },  // W76 vs W78
-    92:  { date:"Jul 5",  from:[79,80],  score:null },  // W79 vs W80
-    93:  { date:"Jul 6",  from:[83,84],  score:null },  // W83 vs W84
-    94:  { date:"Jul 6",  from:[81,82],  score:null },  // W81 vs W82
-    95:  { date:"Jul 7",  from:[86,88],  score:null },  // W86 vs W88
-    96:  { date:"Jul 7",  from:[85,87],  score:null },  // W85 vs W87
+    89:  { date:"Jul 4",  from:[74,77],  score:null },
+    90:  { date:"Jul 4",  from:[73,75],  score:null },
+    91:  { date:"Jul 5",  from:[76,78],  score:null },
+    92:  { date:"Jul 5",  from:[79,80],  score:null },
+    93:  { date:"Jul 6",  from:[83,84],  score:null },
+    94:  { date:"Jul 6",  from:[81,82],  score:null },
+    95:  { date:"Jul 7",  from:[86,88],  score:null },
+    96:  { date:"Jul 7",  from:[85,87],  score:null },
     // Quarterfinals
     97:  { date:"Jul 9",  from:[89,90],  score:null },
     98:  { date:"Jul 9",  from:[93,94],  score:null },
@@ -214,45 +247,51 @@ const MATCHES = {
     104: { date:"Jul 19", from:[101,102], score:null },
 };
 
-// Bracket structure: each round is an array of pairs [topMatchId, bottomMatchId]
-// These pairs feed (in order) into the next round's matches (top-to-bottom)
-const ROUNDS = [
-    { label:"Round of 32", pairs:[[73,75],[74,77],[81,82],[83,84],[76,78],[79,80],[85,87],[86,88]] },
-    { label:"Round of 16", pairs:[[90,89],[94,93],[91,92],[96,95]] },
-    { label:"Quarterfinal", pairs:[[97,98],[99,100]] },
-    { label:"Semifinal",    pairs:[[101,102]] },
+// ── Bracket layout ─────────────────────────────────────────────
+//
+// Left half (→):  R32L | R16L | QFL | SFL
+//                   ↓     ↓     ↓     ↓ → FINAL ← ↑    ↑     ↑     ↑
+// Right half (←): R32R | R16R | QFR | SFR        SFR | QFR | R16R | R32R
+//
+// LEFT_ROUNDS: columns ordered left→right (R32 first)
+// RIGHT_ROUNDS: columns ordered left→right (SF first, closest to center)
+
+const LEFT_ROUNDS = [
+    { label:"Round of 32", pairs:[[73,75],[74,77],[81,82],[83,84]] },
+    { label:"Round of 16", pairs:[[90,89],[94,93]] },
+    { label:"Quarterfinal", pairs:[[97,98]] },
+    { label:"Semifinal",    pairs:[[101]] },       // solo — no arm
+];
+const RIGHT_ROUNDS = [
+    { label:"Semifinal",    pairs:[[102]] },       // solo — no arm
+    { label:"Quarterfinal", pairs:[[99,100]] },
+    { label:"Round of 16", pairs:[[91,92],[96,95]] },
+    { label:"Round of 32", pairs:[[76,78],[79,80],[85,87],[86,88]] },
 ];
 
-// ── Winner logic ───────────────────────────────────────────────
+// ── Winner helpers ─────────────────────────────────────────────
 function getTeams(id) {
     const m = MATCHES[id];
     if (m.t1 !== undefined) return { t1: m.t1, t2: m.t2 };
     return { t1: getWinner(m.from[0]), t2: getWinner(m.from[1]) };
 }
-
 function getWinner(id) {
     const m = MATCHES[id];
     if (m.penWinner) return m.penWinner;
     if (!m.score) return null;
-    const [g1, g2] = m.score.split('-').map(Number);
+    const [a, b] = m.score.split('-').map(Number);
     const { t1, t2 } = getTeams(id);
-    if (g1 > g2) return t1;
-    if (g2 > g1) return t2;
-    return null; // draw → needs penWinner
+    return a > b ? t1 : b > a ? t2 : null;
 }
-
 function getLoser(id) {
-    const m = MATCHES[id];
-    if (!m.score) return null;
-    const { t1, t2 } = getTeams(id);
     const w = getWinner(id);
     if (!w) return null;
+    const { t1, t2 } = getTeams(id);
     return w === t1 ? t2 : t1;
 }
 
-// ── Rendering ──────────────────────────────────────────────────
+// ── Rendering helpers ──────────────────────────────────────────
 let lang = localStorage.getItem('wc-lang') || 'th';
-
 function toggleLang() {
     lang = lang === 'th' ? 'en' : 'th';
     localStorage.setItem('wc-lang', lang);
@@ -260,25 +299,26 @@ function toggleLang() {
 }
 
 function flagHtml(team) {
-    if (!team) return '<div class="t-flag-ph"></div>';
+    if (!team) return '<div class="tph"></div>';
     const code = FLAG[team];
-    if (!code) return '<div class="t-flag-ph"></div>';
-    return `<img class="t-flag" src="https://flagcdn.com/w40/${code}.png" onerror="this.style.opacity=0.2" alt="">`;
+    return code
+        ? `<img class="tflag" src="https://flagcdn.com/w40/${code}.png" onerror="this.style.opacity=.15" alt="">`
+        : '<div class="tph"></div>';
 }
 
+const SHORT = {
+    "South Africa":"S. Africa","Netherlands":"Neth.","Ivory Coast":"Iv. Coast",
+    "Switzerland":"Swiss","Cabo Verde":"Cabo V.","DR Congo":"DR Congo",
+};
+function nameHtml(team) {
+    if (!team) return `<span class="tname tbd">TBD</span>`;
+    return `<span class="tname">${SHORT[team] || team}</span>`;
+}
 function ownerHtml(team) {
     if (!team) return '';
     const p = OWNER[team];
     if (!p) return '';
-    return `<span class="t-owner" style="color:${p.color}">${lang === 'th' ? p.name : p.en}</span>`;
-}
-
-function teamDisplay(team) {
-    if (!team) return `<span class="t-name tbd">TBD</span>`;
-    // Shorten long names
-    const SHORT = { "South Africa":"S. Africa", "Netherlands":"Neth.", "Ivory Coast":"Iv. Coast",
-                    "Switzerland":"Switzerland", "Cabo Verde":"Cabo Verde", "DR Congo":"DR Congo" };
-    return `<span class="t-name">${SHORT[team] || team}</span>`;
+    return `<span class="towner" style="color:${p.color}">${lang === 'th' ? p.name : p.en}</span>`;
 }
 
 function renderCard(id) {
@@ -287,69 +327,105 @@ function renderCard(id) {
     const winner = m.score ? getWinner(id) : null;
     const [s1, s2] = m.score ? m.score.split('-').map(Number) : [null, null];
 
-    function row(team, score, isT1) {
-        const isWinner = winner && team && winner === team;
-        const isLoser  = winner && team && winner !== team;
-        return `<div class="match-team${isWinner?' t-winner':''}${isLoser?' t-loser':''}">
+    function row(team, score) {
+        const isW = winner && team && team === winner;
+        const isL = winner && team && team !== winner;
+        const wdlCls = isW ? ' tw' : isL ? ' tl' : '';
+        const sCls   = isW ? ' w' : '';
+        return `<div class="mteam${wdlCls}">
             ${flagHtml(team)}
-            ${teamDisplay(team)}
+            ${nameHtml(team)}
             ${ownerHtml(team)}
-            ${score !== null ? `<span class="t-score${isWinner?' w':''}">${score}</span>` : ''}
+            ${score !== null ? `<span class="tscore${sCls}">${score}</span>` : ''}
         </div>`;
     }
 
-    return `<div class="match-card">
-        <div class="match-date">${m.date}</div>
-        ${row(t1, s1, true)}
-        ${row(t2, s2, false)}
+    return `<div class="mcard">
+        <div class="mdate">${m.date}</div>
+        ${row(t1, s1)}
+        ${row(t2, s2)}
     </div>`;
 }
 
+// ── Build bracket HTML ─────────────────────────────────────────
+function buildHalf(rounds, side) {
+    // side: 'lh' or 'rh'
+    // A pair with 1 match is a solo slot (no arm, no pair wrapper needed)
+    let html = `<div class="${side}">`;
+    rounds.forEach((round, ri) => {
+        const totalRounds = rounds.length;
+        const isFirst = ri === 0;
+        const isLast  = ri === totalRounds - 1;
+
+        if (!isFirst) html += `<div class="rgap"></div>`;
+
+        html += `<div class="rcol">`;
+        round.pairs.forEach(pair => {
+            const isSolo = pair.length === 1;
+            html += isSolo
+                ? `<div class="mpair">`
+                : `<div class="mpair arm">`;
+
+            pair.forEach(id => {
+                // out: sends connector toward bracket arm
+                // in:  receives connector from bracket arm of previous round
+                const hasOut = !isLast;           // all except the outermost (SF solo) → actually even SF solo has "out" to the Final
+                const hasIn  = side === 'lh' ? ri > 0 : ri < totalRounds - 1;
+                // For SF solo in LH: out goes RIGHT to Final; in comes from QF arm
+                // For SF solo in RH: out goes LEFT to Final; in comes from QF arm
+                const outCls = 'out';
+                const inCls  = hasIn ? ' in' : '';
+                html += `<div class="mslot ${outCls}${inCls}">${renderCard(id)}</div>`;
+            });
+
+            html += `</div>`;
+        });
+        html += `</div>`;
+
+        if (isLast) html += `<div class="rgap"></div>`;
+    });
+    html += `</div>`;
+    return html;
+}
+
+// ── Main render ────────────────────────────────────────────────
 function render() {
-    const l = lang;
-    document.getElementById('langBtn').textContent = l === 'th' ? 'EN' : 'TH';
-    document.getElementById('h-title').textContent = l === 'th' ? '🏆 บราเก็ต World Cup 2026' : '🏆 World Cup 2026 Bracket';
-    document.getElementById('h-sub').textContent   = l === 'th' ? 'รอบ 32 ทีม → รอบชิงชนะเลิศ' : 'Round of 32 → Final';
-    document.getElementById('h-score').textContent = l === 'th' ? '📊 ตาราง' : '📊 Scoreboard';
-    document.getElementById('h-pick').textContent  = l === 'th' ? '🎡 จับฉลาก' : '🎡 Picker';
-    document.getElementById('thirdLabel').textContent = l === 'th' ? '🥉 อันดับสาม' : '🥉 Third Place';
+    // Header strings
+    document.getElementById('langBtn').textContent  = lang === 'th' ? 'EN' : 'TH';
+    document.getElementById('h-title').textContent  = lang === 'th' ? '🏆 บราเก็ต World Cup 2026' : '🏆 World Cup 2026 Bracket';
+    document.getElementById('h-sub').textContent    = lang === 'th' ? 'รอบ 32 ทีม → รอบชิงชนะเลิศ' : 'Round of 32 → Final';
+    document.getElementById('h-score').textContent  = lang === 'th' ? '📊 ตาราง' : '📊 Scoreboard';
+    document.getElementById('h-pick').textContent   = lang === 'th' ? '🎡 จับฉลาก' : '🎡 Picker';
+    document.getElementById('thirdLbl').textContent = lang === 'th' ? '🥉 อันดับสาม' : '🥉 Third Place';
 
     // Legend
     document.getElementById('legend').innerHTML = PLAYERS.map(p =>
-        `<div class="legend-item"><div class="l-dot" style="background:${p.color}"></div>${l==='th'?p.name:p.en}</div>`
+        `<div class="legend-item"><div class="l-dot" style="background:${p.color}"></div>${lang === 'th' ? p.name : p.en}</div>`
     ).join('');
 
-    // Labels row
-    document.getElementById('bLabels').innerHTML =
-        ROUNDS.map(r => `<div class="bracket-label">${r.label}</div><div class="bracket-label-gap"></div>`).join('')
-        + `<div class="bracket-label final">Final</div>`;
+    // Labels row:
+    // Left: R32 → gap → R16 → gap → QF → gap → SF → gap
+    // Center: FINAL
+    // Right: gap → SF → gap → QF → gap → R16 → gap → R32
+    const lLabels = LEFT_ROUNDS.map(r =>
+        `<div class="blabel">${r.label}</div><div class="blabel-gap"></div>`
+    ).join('');
+    const rLabels = RIGHT_ROUNDS.map(r =>
+        `<div class="blabel-gap"></div><div class="blabel">${r.label}</div>`
+    ).join('');
+    document.getElementById('blabels').innerHTML =
+        lLabels + `<div class="blabel final-lbl">⚽ Final</div>` + rLabels;
 
     // Bracket
-    let html = '';
-    ROUNDS.forEach((round, ri) => {
-        html += `<div class="round-col">`;
-        round.pairs.forEach(pair => {
-            html += `<div class="match-pair has-arm">`;
-            pair.forEach(id => {
-                const cl = ri > 0 ? ' cl' : '';
-                html += `<div class="match-slot cr${cl}">${renderCard(id)}</div>`;
-            });
-            html += `</div>`;
-        });
-        html += `</div><div class="round-gap"></div>`;
-    });
-
-    // Final column
-    const sf1loser = getLoser(101), sf2loser = getLoser(102);
-    const finalWinner = getWinner(104);
-    html += `<div class="final-col">
-        <div class="trophy-label">🏆</div>
-        <div class="final-slot cl">${renderCard(104)}</div>
+    const finalHtml = `<div class="final-col">
+        <div class="trophy">🏆</div>
+        <div class="final-wrap">${renderCard(104)}</div>
     </div>`;
 
-    document.getElementById('bracket').innerHTML = html;
+    document.getElementById('bracket').innerHTML =
+        buildHalf(LEFT_ROUNDS, 'lh') + finalHtml + buildHalf(RIGHT_ROUNDS, 'rh');
 
-    // 3rd place match
+    // 3rd place
     document.getElementById('thirdCard').innerHTML = renderCard(103);
 }
 
