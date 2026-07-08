@@ -2,7 +2,7 @@
 // Update qualifyPct, played, next, and LAST_UPDATED here only.
 // scoreboard.html and worst.html both load this file.
 
-const LAST_UPDATED = "5 ก.ค. 2026";
+const LAST_UPDATED = "8 ก.ค. 2026";
 
 const teamByName = {
     // ── Group A ─────────────────────────────────────────────────────────────
@@ -10,8 +10,8 @@ const teamByName = {
         played:[{date:"Jun 11",vs:"Mexico",score:"0-2",wdl:"L"},{date:"Jun 18",vs:"Czechia",score:"1-1",wdl:"D"},{date:"Jun 24",vs:"South Korea",score:"1-0",wdl:"W"},{date:"Jun 28",vs:"Canada",score:"0-1",wdl:"L"}],
         next:[] },
     "Mexico": { name:"Mexico", group:"A", qualifyPct:100,
-        played:[{date:"Jun 11",vs:"South Africa",score:"2-0",wdl:"W"},{date:"Jun 18",vs:"South Korea",score:"1-0",wdl:"W"},{date:"Jun 24",vs:"Czechia",score:"3-0",wdl:"W"},{date:"Jun 30",vs:"Ecuador",score:"2-0",wdl:"W"}],
-        next:[{date:"Jul 5",vs:"England"}] },
+        played:[{date:"Jun 11",vs:"South Africa",score:"2-0",wdl:"W"},{date:"Jun 18",vs:"South Korea",score:"1-0",wdl:"W"},{date:"Jun 24",vs:"Czechia",score:"3-0",wdl:"W"},{date:"Jun 30",vs:"Ecuador",score:"2-0",wdl:"W"},{date:"Jul 5",vs:"England",score:"2-3",wdl:"L"}],
+        next:[] },
     "South Korea": { name:"South Korea", group:"A", qualifyPct:0,
         played:[{date:"Jun 11",vs:"Czechia",score:"2-1",wdl:"W"},{date:"Jun 18",vs:"Mexico",score:"0-1",wdl:"L"},{date:"Jun 24",vs:"South Africa",score:"0-1",wdl:"L"}],
         next:[] },
@@ -24,8 +24,8 @@ const teamByName = {
         played:[{date:"Jun 12",vs:"Switzerland",score:"1-1",wdl:"D"},{date:"Jun 18",vs:"Canada",score:"0-6",wdl:"L"},{date:"Jun 24",vs:"Bosnia",score:"1-3",wdl:"L"}],
         next:[] },
     "Switzerland": { name:"Switzerland", group:"B", pot:2, qualifyPct:100,
-        played:[{date:"Jun 12",vs:"Qatar",score:"1-1",wdl:"D"},{date:"Jun 18",vs:"Bosnia",score:"4-1",wdl:"W"},{date:"Jun 24",vs:"Canada",score:"3-1",wdl:"W"},{date:"Jul 2",vs:"Algeria",score:"2-0",wdl:"W"}],
-        next:[{date:"Jul 7",vs:"Colombia"}] },
+        played:[{date:"Jun 12",vs:"Qatar",score:"1-1",wdl:"D"},{date:"Jun 18",vs:"Bosnia",score:"4-1",wdl:"W"},{date:"Jun 24",vs:"Canada",score:"3-1",wdl:"W"},{date:"Jul 2",vs:"Algeria",score:"2-0",wdl:"W"},{date:"Jul 7",vs:"Colombia",score:"0-0",wdl:"W"}],
+        next:[{date:"Jul 10",vs:"Argentina"}] },
     "Canada": { name:"Canada", group:"B", qualifyPct:100,
         played:[{date:"Jun 12",vs:"Bosnia",score:"1-1",wdl:"D"},{date:"Jun 18",vs:"Qatar",score:"6-0",wdl:"W"},{date:"Jun 24",vs:"Switzerland",score:"1-3",wdl:"L"},{date:"Jun 28",vs:"South Africa",score:"1-0",wdl:"W"},{date:"Jul 4",vs:"Morocco",score:"0-3",wdl:"L"}],
         next:[] },
@@ -35,8 +35,8 @@ const teamByName = {
 
     // ── Group C ─────────────────────────────────────────────────────────────
     "Brazil": { name:"Brazil", group:"C", pot:1, qualifyPct:100,
-        played:[{date:"Jun 13",vs:"Morocco",score:"1-1",wdl:"D"},{date:"Jun 19",vs:"Haiti",score:"3-0",wdl:"W"},{date:"Jun 24",vs:"Scotland",score:"3-0",wdl:"W"},{date:"Jun 29",vs:"Japan",score:"2-1",wdl:"W"}],
-        next:[{date:"Jul 5",vs:"Norway"}] },
+        played:[{date:"Jun 13",vs:"Morocco",score:"1-1",wdl:"D"},{date:"Jun 19",vs:"Haiti",score:"3-0",wdl:"W"},{date:"Jun 24",vs:"Scotland",score:"3-0",wdl:"W"},{date:"Jun 29",vs:"Japan",score:"2-1",wdl:"W"},{date:"Jul 5",vs:"Norway",score:"1-2",wdl:"L"}],
+        next:[] },
     "Scotland": { name:"Scotland", group:"C", pot:3, qualifyPct:0,
         played:[{date:"Jun 13",vs:"Haiti",score:"1-0",wdl:"W"},{date:"Jun 19",vs:"Morocco",score:"0-1",wdl:"L"},{date:"Jun 24",vs:"Brazil",score:"0-3",wdl:"L"}],
         next:[] },
@@ -58,8 +58,8 @@ const teamByName = {
         played:[{date:"Jun 12",vs:"USA",score:"1-4",wdl:"L"},{date:"Jun 19",vs:"Turkey",score:"1-0",wdl:"W"},{date:"Jun 25",vs:"Australia",score:"0-0",wdl:"D"},{date:"Jun 29",vs:"Germany",score:"1-1",wdl:"W"},{date:"Jul 4",vs:"France",score:"0-1",wdl:"L"}],
         next:[] },
     "USA": { name:"USA", group:"D", qualifyPct:100,
-        played:[{date:"Jun 12",vs:"Paraguay",score:"4-1",wdl:"W"},{date:"Jun 19",vs:"Australia",score:"2-0",wdl:"W"},{date:"Jun 25",vs:"Turkey",score:"2-3",wdl:"L"},{date:"Jul 1",vs:"Bosnia",score:"2-0",wdl:"W"}],
-        next:[{date:"Jul 6",vs:"Belgium"}] },
+        played:[{date:"Jun 12",vs:"Paraguay",score:"4-1",wdl:"W"},{date:"Jun 19",vs:"Australia",score:"2-0",wdl:"W"},{date:"Jun 25",vs:"Turkey",score:"2-3",wdl:"L"},{date:"Jul 1",vs:"Bosnia",score:"2-0",wdl:"W"},{date:"Jul 6",vs:"Belgium",score:"1-4",wdl:"L"}],
+        next:[] },
 
     // ── Group E ─────────────────────────────────────────────────────────────
     "Germany": { name:"Germany", group:"E", pot:1, qualifyPct:100,
@@ -91,11 +91,11 @@ const teamByName = {
 
     // ── Group G ─────────────────────────────────────────────────────────────
     "Belgium": { name:"Belgium", group:"G", pot:1, qualifyPct:100,
-        played:[{date:"Jun 15",vs:"Egypt",score:"1-1",wdl:"D"},{date:"Jun 21",vs:"Iran",score:"0-0",wdl:"D"},{date:"Jun 26",vs:"New Zealand",score:"5-1",wdl:"W"},{date:"Jul 1",vs:"Senegal",score:"3-2",wdl:"W"}],
-        next:[{date:"Jul 6",vs:"USA"}] },
+        played:[{date:"Jun 15",vs:"Egypt",score:"1-1",wdl:"D"},{date:"Jun 21",vs:"Iran",score:"0-0",wdl:"D"},{date:"Jun 26",vs:"New Zealand",score:"5-1",wdl:"W"},{date:"Jul 1",vs:"Senegal",score:"3-2",wdl:"W"},{date:"Jul 6",vs:"USA",score:"4-1",wdl:"W"}],
+        next:[{date:"Jul 9",vs:"Spain"}] },
     "Egypt": { name:"Egypt", group:"G", pot:3, qualifyPct:100,
-        played:[{date:"Jun 15",vs:"Belgium",score:"1-1",wdl:"D"},{date:"Jun 21",vs:"New Zealand",score:"3-1",wdl:"W"},{date:"Jun 26",vs:"Iran",score:"1-1",wdl:"D"},{date:"Jul 3",vs:"Australia",score:"1-1",wdl:"W"}],
-        next:[{date:"Jul 7",vs:"Argentina"}] },
+        played:[{date:"Jun 15",vs:"Belgium",score:"1-1",wdl:"D"},{date:"Jun 21",vs:"New Zealand",score:"3-1",wdl:"W"},{date:"Jun 26",vs:"Iran",score:"1-1",wdl:"D"},{date:"Jul 3",vs:"Australia",score:"1-1",wdl:"W"},{date:"Jul 7",vs:"Argentina",score:"2-3",wdl:"L"}],
+        next:[] },
     "New Zealand": { name:"New Zealand", group:"G", pot:4, qualifyPct:0,
         played:[{date:"Jun 15",vs:"Iran",score:"2-2",wdl:"D"},{date:"Jun 21",vs:"Egypt",score:"1-3",wdl:"L"},{date:"Jun 26",vs:"Belgium",score:"1-5",wdl:"L"}],
         next:[] },
@@ -105,8 +105,8 @@ const teamByName = {
 
     // ── Group H ─────────────────────────────────────────────────────────────
     "Spain": { name:"Spain", group:"H", pot:1, qualifyPct:100,
-        played:[{date:"Jun 15",vs:"Cabo Verde",score:"0-0",wdl:"D"},{date:"Jun 21",vs:"Saudi Arabia",score:"4-0",wdl:"W"},{date:"Jun 26",vs:"Uruguay",score:"1-0",wdl:"W"},{date:"Jul 2",vs:"Austria",score:"3-0",wdl:"W"}],
-        next:[{date:"Jul 6",vs:"Portugal"}] },
+        played:[{date:"Jun 15",vs:"Cabo Verde",score:"0-0",wdl:"D"},{date:"Jun 21",vs:"Saudi Arabia",score:"4-0",wdl:"W"},{date:"Jun 26",vs:"Uruguay",score:"1-0",wdl:"W"},{date:"Jul 2",vs:"Austria",score:"3-0",wdl:"W"},{date:"Jul 6",vs:"Portugal",score:"1-0",wdl:"W"}],
+        next:[{date:"Jul 9",vs:"Belgium"}] },
     "Uruguay": { name:"Uruguay", group:"H", pot:2, qualifyPct:0,
         played:[{date:"Jun 15",vs:"Saudi Arabia",score:"1-1",wdl:"D"},{date:"Jun 21",vs:"Cabo Verde",score:"2-2",wdl:"D"},{date:"Jun 26",vs:"Spain",score:"0-1",wdl:"L"}],
         next:[] },
@@ -125,16 +125,16 @@ const teamByName = {
         played:[{date:"Jun 16",vs:"France",score:"1-3",wdl:"L"},{date:"Jun 22",vs:"Norway",score:"2-3",wdl:"L"},{date:"Jun 26",vs:"Iraq",score:"5-0",wdl:"W"},{date:"Jul 1",vs:"Belgium",score:"2-3",wdl:"L"}],
         next:[] },
     "Norway": { name:"Norway", group:"I", pot:3, qualifyPct:100,
-        played:[{date:"Jun 16",vs:"Iraq",score:"4-1",wdl:"W"},{date:"Jun 22",vs:"Senegal",score:"3-2",wdl:"W"},{date:"Jun 26",vs:"France",score:"1-4",wdl:"L"},{date:"Jun 30",vs:"Ivory Coast",score:"2-1",wdl:"W"}],
-        next:[{date:"Jul 5",vs:"Brazil"}] },
+        played:[{date:"Jun 16",vs:"Iraq",score:"4-1",wdl:"W"},{date:"Jun 22",vs:"Senegal",score:"3-2",wdl:"W"},{date:"Jun 26",vs:"France",score:"1-4",wdl:"L"},{date:"Jun 30",vs:"Ivory Coast",score:"2-1",wdl:"W"},{date:"Jul 5",vs:"Brazil",score:"2-1",wdl:"W"}],
+        next:[{date:"Jul 10",vs:"England"}] },
     "Iraq": { name:"Iraq", group:"I", pot:4, qualifyPct:0,
         played:[{date:"Jun 16",vs:"Norway",score:"1-4",wdl:"L"},{date:"Jun 22",vs:"France",score:"0-3",wdl:"L"},{date:"Jun 26",vs:"Senegal",score:"0-5",wdl:"L"}],
         next:[] },
 
     // ── Group J ─────────────────────────────────────────────────────────────
     "Argentina": { name:"Argentina", group:"J", pot:1, qualifyPct:100,
-        played:[{date:"Jun 16",vs:"Algeria",score:"3-0",wdl:"W"},{date:"Jun 22",vs:"Austria",score:"2-0",wdl:"W"},{date:"Jun 27",vs:"Jordan",score:"3-1",wdl:"W"},{date:"Jul 3",vs:"Cabo Verde",score:"3-2",wdl:"W"}],
-        next:[{date:"Jul 7",vs:"Egypt"}] },
+        played:[{date:"Jun 16",vs:"Algeria",score:"3-0",wdl:"W"},{date:"Jun 22",vs:"Austria",score:"2-0",wdl:"W"},{date:"Jun 27",vs:"Jordan",score:"3-1",wdl:"W"},{date:"Jul 3",vs:"Cabo Verde",score:"3-2",wdl:"W"},{date:"Jul 7",vs:"Egypt",score:"3-2",wdl:"W"}],
+        next:[{date:"Jul 10",vs:"Switzerland"}] },
     "Austria": { name:"Austria", group:"J", pot:2, qualifyPct:100,
         played:[{date:"Jun 16",vs:"Jordan",score:"3-1",wdl:"W"},{date:"Jun 22",vs:"Argentina",score:"0-2",wdl:"L"},{date:"Jun 27",vs:"Algeria",score:"3-3",wdl:"D"},{date:"Jul 2",vs:"Spain",score:"0-3",wdl:"L"}],
         next:[] },
@@ -147,8 +147,8 @@ const teamByName = {
 
     // ── Group K ─────────────────────────────────────────────────────────────
     "Portugal": { name:"Portugal", group:"K", pot:1, qualifyPct:100,
-        played:[{date:"Jun 17",vs:"DR Congo",score:"1-1",wdl:"D"},{date:"Jun 23",vs:"Uzbekistan",score:"5-0",wdl:"W"},{date:"Jun 27",vs:"Colombia",score:"0-0",wdl:"D"},{date:"Jul 2",vs:"Croatia",score:"2-1",wdl:"W"}],
-        next:[{date:"Jul 6",vs:"Spain"}] },
+        played:[{date:"Jun 17",vs:"DR Congo",score:"1-1",wdl:"D"},{date:"Jun 23",vs:"Uzbekistan",score:"5-0",wdl:"W"},{date:"Jun 27",vs:"Colombia",score:"0-0",wdl:"D"},{date:"Jul 2",vs:"Croatia",score:"2-1",wdl:"W"},{date:"Jul 6",vs:"Spain",score:"0-1",wdl:"L"}],
+        next:[] },
     "DR Congo": { name:"DR Congo", group:"K", pot:4, qualifyPct:100,
         played:[{date:"Jun 17",vs:"Portugal",score:"1-1",wdl:"D"},{date:"Jun 23",vs:"Colombia",score:"0-1",wdl:"L"},{date:"Jun 27",vs:"Uzbekistan",score:"3-1",wdl:"W"},{date:"Jul 1",vs:"England",score:"1-2",wdl:"L"}],
         next:[] },
@@ -156,13 +156,13 @@ const teamByName = {
         played:[{date:"Jun 17",vs:"Colombia",score:"1-3",wdl:"L"},{date:"Jun 23",vs:"Portugal",score:"0-5",wdl:"L"},{date:"Jun 27",vs:"DR Congo",score:"1-3",wdl:"L"}],
         next:[] },
     "Colombia": { name:"Colombia", group:"K", qualifyPct:100,
-        played:[{date:"Jun 17",vs:"Uzbekistan",score:"3-1",wdl:"W"},{date:"Jun 23",vs:"DR Congo",score:"1-0",wdl:"W"},{date:"Jun 27",vs:"Portugal",score:"0-0",wdl:"D"},{date:"Jul 3",vs:"Ghana",score:"1-0",wdl:"W"}],
-        next:[{date:"Jul 7",vs:"Switzerland"}] },
+        played:[{date:"Jun 17",vs:"Uzbekistan",score:"3-1",wdl:"W"},{date:"Jun 23",vs:"DR Congo",score:"1-0",wdl:"W"},{date:"Jun 27",vs:"Portugal",score:"0-0",wdl:"D"},{date:"Jul 3",vs:"Ghana",score:"1-0",wdl:"W"},{date:"Jul 7",vs:"Switzerland",score:"0-0",wdl:"L"}],
+        next:[] },
 
     // ── Group L ─────────────────────────────────────────────────────────────
     "England": { name:"England", group:"L", pot:1, qualifyPct:100,
-        played:[{date:"Jun 17",vs:"Croatia",score:"4-2",wdl:"W"},{date:"Jun 23",vs:"Ghana",score:"0-0",wdl:"D"},{date:"Jun 27",vs:"Panama",score:"2-0",wdl:"W"},{date:"Jul 1",vs:"DR Congo",score:"2-1",wdl:"W"}],
-        next:[{date:"Jul 5",vs:"Mexico"}] },
+        played:[{date:"Jun 17",vs:"Croatia",score:"4-2",wdl:"W"},{date:"Jun 23",vs:"Ghana",score:"0-0",wdl:"D"},{date:"Jun 27",vs:"Panama",score:"2-0",wdl:"W"},{date:"Jul 1",vs:"DR Congo",score:"2-1",wdl:"W"},{date:"Jul 5",vs:"Mexico",score:"3-2",wdl:"W"}],
+        next:[{date:"Jul 10",vs:"Norway"}] },
     "Croatia": { name:"Croatia", group:"L", pot:2, qualifyPct:100,
         played:[{date:"Jun 17",vs:"England",score:"2-4",wdl:"L"},{date:"Jun 23",vs:"Panama",score:"1-0",wdl:"W"},{date:"Jun 27",vs:"Ghana",score:"2-1",wdl:"W"},{date:"Jul 2",vs:"Portugal",score:"1-2",wdl:"L"}],
         next:[] },
